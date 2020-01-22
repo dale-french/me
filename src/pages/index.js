@@ -80,7 +80,7 @@ const Section = styled.section`
       visibility: hidden;
     }
   }
-  a {
+  & > a {
     position: relative;
     margin: 0 auto 3.6em;
     padding: 0 0.6rem;
@@ -108,6 +108,7 @@ const Section = styled.section`
     &:hover {
       span {
         color: ${theme.colors.blue};
+        border-color: ${theme.colors.blue};
       }
       &:after {
         height: 24px;
