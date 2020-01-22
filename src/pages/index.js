@@ -11,7 +11,9 @@ const IndexPage = () => (
   <Layout>
     <SEO title="Home" />
     <Section>
-      {/* <Link to="/about/">Who am I?</Link> */}
+      <Link to="/about/">
+        <span>Who am I?</span>
+      </Link>
       <h1>Dale French</h1>
       <h2>
         Full Stack Developer who likes building stuff with
@@ -78,6 +80,40 @@ const Section = styled.section`
       visibility: hidden;
     }
   }
+  a {
+    position: relative;
+    margin: 0 auto 3.6em;
+    padding: 0 0.6rem;
+    span {
+      color: ${theme.colors.white};
+      z-index: 1;
+      font-size: 1.6rem;
+      line-height: 1.5;
+      border-bottom: 1px dotted ${theme.colors.white};
+      position: relative;
+      transition: all 0.25s ease-in-out;
+    }
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 0;
+      width: 100%;
+      transition: height 0.25s ease-in-out;
+      will-change: transform;
+      background-color: #f1c40f;
+      z-index: 0;
+    }
+    &:hover {
+      span {
+        color: ${theme.colors.blue};
+      }
+      &:after {
+        height: 24px;
+      }
+    }
+  }
 `
 
 const Footer = styled.footer`
@@ -87,5 +123,7 @@ const Footer = styled.footer`
   }
   a {
     color: ${theme.colors.orange};
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
   }
 `

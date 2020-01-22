@@ -62,8 +62,7 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.8;
   }
   a {
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
+    text-decoration: none;
   }
   main {
     display: flex;
