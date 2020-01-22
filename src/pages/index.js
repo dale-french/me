@@ -22,8 +22,30 @@ const IndexPage = () => (
         <p>
           © {new Date().getFullYear()} - Dale French
           <br />
-          Built with <a href="#">Gatsby</a> • Hosted on <a href="#">Netlify</a>{" "}
-          • Code on <a href="#">GitHub</a>
+          Built with{" "}
+          <a
+            href="https://www.gatsbyjs.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Gatsby
+          </a>{" "}
+          • Hosted on{" "}
+          <a
+            href="https://www.netlify.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Netlify
+          </a>{" "}
+          • Code on{" "}
+          <a
+            href="https://github.com/dale-french/me"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
         </p>
       </Footer>
     </Section>
