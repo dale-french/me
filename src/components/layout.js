@@ -58,6 +58,8 @@ const GlobalStyle = createGlobalStyle`
   }
   a, p {
     font-family: 'Roboto', sans-serif;
+    font-size: 1.3rem;
+    line-height: 1.8;
   }
   a {
     text-decoration-line: underline;

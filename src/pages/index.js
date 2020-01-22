@@ -18,14 +18,14 @@ const IndexPage = () => (
         <span>Styled Components</span>
       </h2>
 
-      <footer>
+      <Footer>
         <p>
           © {new Date().getFullYear()} - Dale French
           <br />
           Built with <a href="#">Gatsby</a> • Hosted on <a href="#">Netlify</a>{" "}
           • Code on <a href="#">GitHub</a>
         </p>
-      </footer>
+      </Footer>
     </Section>
   </Layout>
 )
@@ -40,15 +40,23 @@ const Section = styled.section`
   justify-content: center;
   background: ${theme.colors.blue};
   text-align: center;
-
   h1 {
     color: ${theme.colors.orange};
   }
-
   h2 {
     color: ${theme.colors.white};
     span {
       color: ${theme.colors.orange};
     }
+  }
+`
+
+const Footer = styled.footer`
+  padding-top: 2rem;
+  p {
+    color: ${theme.colors.white};
+  }
+  a {
+    color: ${theme.colors.orange};
   }
 `
