@@ -13,7 +13,7 @@ const things_I_like = [
 
 const TypistComponent = () => (
   <Typist>
-    <Typist.Delay ms={1000} />
+    <Typist.Delay ms={600} />
     {things_I_like.map((thing, index) => {
       return (
         <strong key={thing}>
