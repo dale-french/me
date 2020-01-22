@@ -9,7 +9,7 @@ import { Typist } from "../components"
 
 const IndexPage = () => (
   <Layout>
-    <SEO title="Home" />
+    <SEO title="Dale French - Full Stack Developer" />
     <Section>
       <Link to="/about/">
         <span>Who am I?</span>
