@@ -5,6 +5,7 @@ import styled from "styled-components"
 import theme from "../utils/theme"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import { Typist } from "../components"
 
 const IndexPage = () => (
   <Layout>
@@ -15,7 +16,7 @@ const IndexPage = () => (
       <h2>
         Full Stack Developer who likes building stuff with
         <br />
-        <span>Styled Components</span>
+        <Typist />
       </h2>
 
       <Footer>
@@ -67,8 +68,14 @@ const Section = styled.section`
   }
   h2 {
     color: ${theme.colors.white};
-    span {
+    strong {
       color: ${theme.colors.orange};
+    }
+    span {
+      color: white;
+    }
+    .Cursor {
+      visibility: hidden;
     }
   }
 `
