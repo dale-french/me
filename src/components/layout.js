@@ -7,6 +7,7 @@
 
 import React from "react"
 import PropTypes from "prop-types"
+import Helmet from "react-helmet"
 
 import { createGlobalStyle } from "styled-components"
 import "normalize.css"
@@ -14,6 +15,12 @@ import "normalize.css"
 const Layout = ({ children }) => {
   return (
     <>
+      <Helmet>
+        <link
+          href="https://fonts.googleapis.com/css?family=Catamaran:900&display=swap"
+          rel="stylesheet"
+        ></link>
+      </Helmet>
       <GlobalStyle />
       <main>{children}</main>
     </>
@@ -31,5 +38,6 @@ const GlobalStyle = createGlobalStyle`
   html {
     --blue: #203447;
     background: var(--blue);
+    font-family: 'Catamaran', sans-serif;
   }
 `
