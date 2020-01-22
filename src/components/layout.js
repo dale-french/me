@@ -40,33 +40,30 @@ export default Layout
 // Global Styles
 const GlobalStyle = createGlobalStyle`
   html {
-    --blue: #203447;
-    --orange: #FFCC66;
-    --white: #FFFFFF;
-    background: var(--blue);
     font-family: 'Catamaran', sans-serif;
     font-size: 10px;
   }
+  html, body, #___gatsby, #gatsby-focus-wrapper, main {
+    height: 100%;
+  }
   h1 {
     font-size: 12rem;
-    color: var(--orange);
-    line-height: 2;
-    margin: 0 0 2rem;
+    line-height: 1;
+    margin: 0 0 1rem;
   }
   h2 {
     font-size: 3.8rem;
-    color: var(--white);
     margin: 0 0 2rem;
+    line-height: 1.3;
   }
-  a, span, p {
+  a, p {
     font-family: 'Roboto', sans-serif;
   }
   a {
-    color: var(--orange);
     text-decoration-line: underline;
     text-decoration-style: dotted;
   }
-  span {
-    color: var(--white);
+  main {
+    display: flex;
   }
 `
