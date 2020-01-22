@@ -37,7 +37,26 @@ export default Layout
 const GlobalStyle = createGlobalStyle`
   html {
     --blue: #203447;
+    --orange: #FFCC66;
+    --white: #FFFFFF;
     background: var(--blue);
     font-family: 'Catamaran', sans-serif;
+    font-size: 10px;
+  }
+  h1 {
+    font-size: 12rem;
+    color: var(--orange);
+  }
+  h2 {
+    font-size: 3.2rem;
+    color: var(--white);
+  }
+  a {
+    color: var(--orange);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+  }
+  span {
+    color: var(--white);
   }
 `
