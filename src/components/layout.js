@@ -20,6 +20,10 @@ const Layout = ({ children }) => {
           href="https://fonts.googleapis.com/css?family=Catamaran:900&display=swap"
           rel="stylesheet"
         ></link>
+        <link
+          href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+          rel="stylesheet"
+        ></link>
       </Helmet>
       <GlobalStyle />
       <main>{children}</main>
@@ -46,10 +50,16 @@ const GlobalStyle = createGlobalStyle`
   h1 {
     font-size: 12rem;
     color: var(--orange);
+    line-height: 1;
+    margin: 0 0 2rem;
   }
   h2 {
-    font-size: 3.2rem;
+    font-size: 3.8rem;
     color: var(--white);
+    margin: 0 0 2rem;
+  }
+  a, span, p {
+    font-family: 'Roboto', sans-serif;
   }
   a {
     color: var(--orange);
