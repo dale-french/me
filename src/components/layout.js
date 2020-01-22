@@ -50,7 +50,7 @@ const GlobalStyle = createGlobalStyle`
   h1 {
     font-size: 12rem;
     color: var(--orange);
-    line-height: 1;
+    line-height: 2;
     margin: 0 0 2rem;
   }
   h2 {
