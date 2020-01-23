@@ -4,6 +4,7 @@ import styled from "styled-components"
 
 import theme from "../utils/theme"
 import Layout from "../components/layout"
+import Sticky from "../components/Sticky"
 import SEO from "../components/seo"
 
 const AboutPage = () => (
@@ -29,11 +30,13 @@ const AboutPage = () => (
         <span>backends and {`API's`}</span> end-to-end.
       </h3>
     </Section>
+    <Sticky />
   </Layout>
 )
 
 export default AboutPage
 
+// Component Styles
 const Section = styled.section`
   display: flex;
   flex-direction: column;

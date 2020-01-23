@@ -56,6 +56,10 @@ const GlobalStyle = createGlobalStyle`
     margin: 0 0 2rem;
     line-height: 1.3;
   }
+  h3 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
   a, p {
     font-family: 'Roboto', sans-serif;
     font-size: 1.3rem;
@@ -66,5 +70,6 @@ const GlobalStyle = createGlobalStyle`
   }
   main {
     display: flex;
+    flex-direction: column;
   }
 `
