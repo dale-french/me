@@ -1,15 +1,16 @@
 import React from "react"
-import { Link } from "gatsby"
 import styled from "styled-components"
 
 import theme from "../utils/theme"
 import Layout from "../components/layout"
 import Sticky from "../components/Sticky"
+import Header from "../components/Header"
 import SEO from "../components/seo"
 
 const AboutPage = () => (
   <Layout>
     <SEO title="A (very) little bit about me" />
+    <Header />
     <Section>
       <h1>
         Howsit.
