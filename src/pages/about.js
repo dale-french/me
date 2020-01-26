@@ -39,7 +39,7 @@ const Section = styled.section`
   background: ${theme.colors.white};
   max-width: 1100px;
   margin: 0 auto;
-  padding: 60px 30px 30px;
+  padding: 60px 30px 80px;
   h1 {
     font-size: 8rem;
     color: ${theme.colors.grey};

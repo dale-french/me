@@ -72,4 +72,11 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     flex-direction: column;
   }
+  ul {
+    li {
+      font-family: 'Roboto', sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+  }
 `
