@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 import theme from "../utils/theme"
 
-const Header = props => {
+const Header = () => {
   return (
     <StyledHeader>
       <Logo href="/">

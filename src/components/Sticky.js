@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 import theme from "../utils/theme"
 
-const Sticky = props => {
+const Sticky = () => {
   return (
     <StyledSticky>
       <div>
