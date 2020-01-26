@@ -1,0 +1,50 @@
+{
+  "plugins": ["react"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "globals": {
+    "it": true,
+    "expect": true,
+    "describe": true,
+    "jest": true,
+    "document": true,
+    "test": true,
+    "window": true,
+    "fetch": true,
+    "WebSocket": true,
+    "alert": true,
+    "URLSearchParams": true,
+    "defaultProps": true,
+    "childContextTypes": true,
+    "contextTypes": true,
+    "state": true,
+    "Event": true,
+    "fail": true,
+    "afterEach": true,
+    "beforeEach": true,
+    "afterAll": true,
+    "MouseEvent": true,
+    "requestAnimationFrame": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "linebreak-style": ["error", "unix"]
+  }
+}
