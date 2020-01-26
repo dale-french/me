@@ -1,1 +1,6 @@
-export * from "./Typist"
+export * from "./header"
+export * from "./layout"
+export * from "./nav"
+export * from "./seo"
+export * from "./sticky"
+export * from "./typist"

@@ -32,7 +32,7 @@ const Sticky = props => {
 
 Sticky.propTypes = {}
 
-export default Sticky
+export { Sticky }
 
 // Component Styles
 const StyledSticky = styled.section`

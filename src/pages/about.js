@@ -2,10 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import theme from "../utils/theme"
-import Layout from "../components/layout"
-import Sticky from "../components/Sticky"
-import Header from "../components/Header"
-import SEO from "../components/seo"
+import { Layout, Header, Sticky, SEO } from "../components"
 
 const AboutPage = () => (
   <Layout>

@@ -13,7 +13,7 @@ Nav.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default Nav
+export { Nav }
 
 // Component Styles
 const StyledNav = styled.a`

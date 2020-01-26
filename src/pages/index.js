@@ -2,10 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import theme from "../utils/theme"
-import Layout from "../components/layout"
-import Nav from "../components/nav"
-import SEO from "../components/seo"
-import { Typist } from "../components"
+import { Layout, Nav, SEO, Typist } from "../components"
 
 const IndexPage = () => (
   <Layout>

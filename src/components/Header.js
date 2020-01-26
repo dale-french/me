@@ -15,7 +15,7 @@ const Header = props => {
 
 Header.propTypes = {}
 
-export default Header
+export { Header }
 
 // Component Styles
 const StyledHeader = styled.header`
