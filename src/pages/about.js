@@ -39,10 +39,6 @@ export default AboutPage
 
 // Component Styles
 const Section = styled.section`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
   background: ${theme.colors.white};
   max-width: 1100px;
   margin: 0 auto;
