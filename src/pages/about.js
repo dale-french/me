@@ -43,7 +43,7 @@ export default AboutPage
 const Section = styled.section`
   max-width: 1100px;
   margin: 0 auto;
-  padding: 60px 30px 80px;
+  padding: 1.5rem 3rem;
   h1 {
     font-size: 8rem;
     color: ${props =>
@@ -63,7 +63,7 @@ const Section = styled.section`
     font-size: 2.5rem;
 
     @media ${theme.devices.tablet} {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
 
     span {
