@@ -45,6 +45,8 @@ const GlobalStyle = createGlobalStyle`
     background: ${props =>
       props.darkMode ? theme.colors.black : theme.colors.white};
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
   h1 {
     font-size: 12rem;
