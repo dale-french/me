@@ -50,7 +50,7 @@ const StyledSticky = styled.section`
     align-items: center;
 
     h3 {
-      color: ${theme.colors.grey};
+      color: ${theme.colors.black};
       margin: 0;
       line-height: 1;
       margin-right: 1rem;

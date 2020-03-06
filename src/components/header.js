@@ -25,18 +25,18 @@ const StyledHeader = styled.header`
 const Logo = styled.a`
   font-family: "Catamaran", sans-serif;
   font-size: 2.7rem;
-  color: ${theme.colors.grey};
+  color: ${theme.colors.black};
   transition: color 0.25s ease-in-out;
   will-change: opacity;
   span {
-    color: ${theme.colors.orange};
+    color: ${theme.colors.blue};
     transition: color 0.25s ease-in-out;
     will-change: opacity;
   }
   &:hover {
-    color: ${theme.colors.orange};
+    color: ${theme.colors.blue};
     span {
-      color: ${theme.colors.grey};
+      color: ${theme.colors.black};
     }
   }
 `
