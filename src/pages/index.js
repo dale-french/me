@@ -62,6 +62,7 @@ const Section = styled.section`
   flex: 1;
   justify-content: center;
   text-align: center;
+  padding: 1.5rem 3rem;
   h1 {
     color: ${theme.colors.blue};
   }

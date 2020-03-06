@@ -43,11 +43,16 @@ export default AboutPage
 const Section = styled.section`
   max-width: 1100px;
   margin: 0 auto;
-  padding: 60px 30px 80px;
+  padding: 1.5rem 3rem;
   h1 {
     font-size: 8rem;
     color: ${props =>
       props.darkMode ? theme.colors.white : theme.colors.black};
+
+    @media ${theme.devices.tablet} {
+      font-size: 5rem;
+    }
+
     span {
       color: ${theme.colors.blue};
     }
@@ -56,6 +61,11 @@ const Section = styled.section`
     color: ${props =>
       props.darkMode ? theme.colors.white : theme.colors.black};
     font-size: 2.5rem;
+
+    @media ${theme.devices.tablet} {
+      font-size: 1.8rem;
+    }
+
     span {
       color: ${theme.colors.blue};
     }
