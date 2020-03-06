@@ -8,7 +8,7 @@ const things_I_like = [
   "Gatsby",
   "Styled Components",
   "Node.js",
-  ".Net Core",
+  "GraphQL",
 ]
 
 const TypistComponent = () => (
@@ -22,7 +22,7 @@ const TypistComponent = () => (
         </strong>
       )
     })}
-    <strong>Code.</strong>
+    <strong>Javascript.</strong>
   </Typist>
 )
 

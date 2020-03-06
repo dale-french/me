@@ -21,11 +21,11 @@ const StyledNav = styled.a`
   margin: 0 auto 3.6em;
   padding: 0 0.6rem;
   span {
-    color: ${theme.colors.white};
+    color: ${theme.colors.black};
     z-index: 1;
     font-size: 1.6rem;
     line-height: 1.5;
-    border-bottom: 1px dotted ${theme.colors.white};
+    border-bottom: 1px dotted ${theme.colors.black};
     position: relative;
     transition: all 0.25s ease-in-out;
   }
@@ -38,13 +38,13 @@ const StyledNav = styled.a`
     width: 100%;
     transition: height 0.25s ease-in-out;
     will-change: transform;
-    background-color: #f1c40f;
+    background-color: ${theme.colors.blue};
     z-index: 0;
   }
   &:hover {
     span {
-      color: ${theme.colors.blue};
-      border-color: ${theme.colors.blue};
+      color: ${theme.colors.white};
+      border-color: ${theme.colors.white};
     }
     &:after {
       height: 24px;

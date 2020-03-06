@@ -9,9 +9,9 @@ const NotFoundPage = () => (
     <SEO title="A (very) little bit about me" />
     <Section>
       <h1>
-        Page <span>Not</span> Found
+        Page <span>Not Found</span>
       </h1>
-      <h3>You just hit a route that {`doesn't`} exist 😐</h3>
+      <h3>💩 You just hit a route that {`doesn't`} exist 💩</h3>
     </Section>
     <Sticky />
   </Layout>
@@ -22,22 +22,21 @@ export default NotFoundPage
 // Component Styles
 const Section = styled.section`
   text-align: center;
-  background: ${theme.colors.white};
   max-width: 1100px;
   margin: 0 auto;
   padding: 60px 30px 30px;
   h1 {
     font-size: 8rem;
-    color: ${theme.colors.grey};
+    color: ${theme.colors.black};
     span {
-      color: ${theme.colors.orange};
+      color: ${theme.colors.blue};
     }
   }
   h3 {
-    color: ${theme.colors.grey};
+    color: ${theme.colors.black};
     font-size: 2.5rem;
     span {
-      color: ${theme.colors.orange};
+      color: ${theme.colors.blue};
     }
   }
 `
