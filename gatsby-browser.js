@@ -1,7 +1,11 @@
-/**
- * Implement Gatsby's Browser APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/browser-apis/
- */
+import React from "react"
+import PropTypes from "prop-types"
+import { ThemeProvider } from "./src/contexts/ThemeContext"
 
-// You can delete this file if you're not using it
+export const wrapRootElement = ({ element }) => (
+  <ThemeProvider>{element}</ThemeProvider>
+)
+
+wrapRootElement.propTypes = {
+  element: PropTypes.node,
+}

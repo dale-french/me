@@ -1,19 +1,15 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
-
-import React from "react"
+import React, { useContext } from "react"
 import PropTypes from "prop-types"
 import Helmet from "react-helmet"
-
 import { createGlobalStyle } from "styled-components"
+
+import ThemeContext from "../contexts/ThemeContext"
 import theme from "../utils/theme"
 import "normalize.css"
 
 const Layout = ({ children }) => {
+  const { darkMode } = useContext(ThemeContext)
+
   return (
     <>
       <Helmet>
@@ -26,7 +22,7 @@ const Layout = ({ children }) => {
           rel="stylesheet"
         ></link>
       </Helmet>
-      <GlobalStyle />
+      <GlobalStyle darkMode={darkMode} />
       <main>{children}</main>
     </>
   )
@@ -46,7 +42,8 @@ const GlobalStyle = createGlobalStyle`
   }
   html, body, #___gatsby, #gatsby-focus-wrapper, main {
     height: 100%;
-    background: ${theme.colors.white}
+    background: ${props =>
+      props.darkMode ? theme.colors.black : theme.colors.white};
   }
   h1 {
     font-size: 12rem;
@@ -57,6 +54,12 @@ const GlobalStyle = createGlobalStyle`
     font-size: 3.8rem;
     margin: 0 0 2rem;
     line-height: 1.3;
+    color: ${props =>
+      props.darkMode ? theme.colors.white : theme.colors.black};
+    
+    strong {
+      color: ${theme.colors.blue};
+    }
   }
   h3 {
     font-size: 2.5rem;
@@ -66,6 +69,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Roboto', sans-serif;
     font-size: 1.3rem;
     line-height: 1.8;
+    color: ${props =>
+      props.darkMode ? theme.colors.white : theme.colors.black};
   }
   a {
     text-decoration: none;
