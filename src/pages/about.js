@@ -48,6 +48,11 @@ const Section = styled.section`
     font-size: 8rem;
     color: ${props =>
       props.darkMode ? theme.colors.white : theme.colors.black};
+
+    @media ${theme.devices.tablet} {
+      font-size: 5rem;
+    }
+
     span {
       color: ${theme.colors.blue};
     }
@@ -56,6 +61,11 @@ const Section = styled.section`
     color: ${props =>
       props.darkMode ? theme.colors.white : theme.colors.black};
     font-size: 2.5rem;
+
+    @media ${theme.devices.tablet} {
+      font-size: 1.5rem;
+    }
+
     span {
       color: ${theme.colors.blue};
     }

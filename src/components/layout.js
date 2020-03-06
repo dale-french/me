@@ -50,6 +50,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: 12rem;
     line-height: 1;
     margin: 0 0 1rem;
+
+    @media ${theme.devices.tablet} {
+      font-size: 10rem
+    }
   }
   h2 {
     font-size: 3.8rem;
@@ -58,6 +62,10 @@ const GlobalStyle = createGlobalStyle`
     color: ${props =>
       props.darkMode ? theme.colors.white : theme.colors.black};
     
+    @media ${theme.devices.tablet} {
+      font-size: 3rem
+    }
+    
     strong {
       color: ${theme.colors.blue};
     }
@@ -65,6 +73,10 @@ const GlobalStyle = createGlobalStyle`
   h3 {
     font-size: 2.5rem;
     line-height: 1.2;
+
+    @media ${theme.devices.tablet} {
+      font-size: 2rem
+    }
   }
   a, p {
     font-family: 'Roboto', sans-serif;
