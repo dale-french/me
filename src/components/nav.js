@@ -1,11 +1,17 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
+import ThemeContext from "../contexts/ThemeContext"
 import theme from "../utils/theme"
 
 const Nav = ({ to, children }) => {
-  return <StyledNav href={to}>{children}</StyledNav>
+  const { darkMode } = useContext(ThemeContext)
+  return (
+    <StyledNav darkMode={darkMode} href={to}>
+      {children}
+    </StyledNav>
+  )
 }
 
 Nav.propTypes = {
@@ -21,11 +27,13 @@ const StyledNav = styled.a`
   margin: 0 auto 3.6em;
   padding: 0 0.6rem;
   span {
-    color: ${theme.colors.black};
+    color: ${props =>
+      props.darkMode ? theme.colors.white : theme.colors.black};
     z-index: 1;
     font-size: 1.6rem;
     line-height: 1.5;
-    border-bottom: 1px dotted ${theme.colors.black};
+    border-bottom: 1px dotted
+      ${props => (props.darkMode ? theme.colors.white : theme.colors.black)};
     position: relative;
     transition: all 0.25s ease-in-out;
   }
