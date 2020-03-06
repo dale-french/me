@@ -10,7 +10,7 @@ const AboutPage = () => (
     <Header />
     <Section>
       <h1>
-        Howsit.
+        Hi!
         <br />
         {`I'm`} an experienced
         <br />
@@ -42,16 +42,16 @@ const Section = styled.section`
   padding: 60px 30px 80px;
   h1 {
     font-size: 8rem;
-    color: ${theme.colors.grey};
+    color: ${theme.colors.black};
     span {
-      color: ${theme.colors.orange};
+      color: ${theme.colors.blue};
     }
   }
   h3 {
-    color: ${theme.colors.grey};
+    color: ${theme.colors.black};
     font-size: 2.5rem;
     span {
-      color: ${theme.colors.orange};
+      color: ${theme.colors.blue};
     }
   }
 `
