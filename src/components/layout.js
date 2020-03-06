@@ -44,6 +44,7 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     background: ${props =>
       props.darkMode ? theme.colors.black : theme.colors.white};
+    user-select: none;
   }
   h1 {
     font-size: 12rem;
