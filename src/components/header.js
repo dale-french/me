@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import styled from "styled-components"
 import ThemeContext from "../contexts/ThemeContext"
 import theme from "../utils/theme"
+import { DarkModeToggle } from "."
 
 const Header = () => {
   const { darkMode, setDarkMode } = useContext(ThemeContext)
@@ -11,15 +12,15 @@ const Header = () => {
       <Logo href="/" darkMode={darkMode}>
         D<span>/</span>F
       </Logo>
-      <button
-        type="button"
-        onClick={() => {
-          setDarkMode(!darkMode)
-          localStorage.setItem("dark", JSON.stringify(!darkMode))
-        }}
-      >
-        Set Mode
-      </button>
+      <ToggleContainer>
+        <DarkModeToggle
+          darkMode={darkMode}
+          onClick={() => {
+            setDarkMode(!darkMode)
+            localStorage.setItem("dark", JSON.stringify(!darkMode))
+          }}
+        />
+      </ToggleContainer>
     </StyledHeader>
   )
 }
@@ -30,6 +31,8 @@ export { Header }
 
 // Component Styles
 const StyledHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
   padding: 1.5rem 3rem;
 `
 
@@ -51,4 +54,8 @@ const Logo = styled.a`
         props.darkMode ? theme.colors.white : theme.colors.black};
     }
   }
+`
+
+const ToggleContainer = styled.div`
+  padding-top: 0.2rem;
 `
