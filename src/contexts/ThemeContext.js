@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react"
+import React, { useState, createContext, useEffect } from "react"
 import PropTypes from "prop-types"
 
 const defaultState = {
@@ -9,6 +9,13 @@ const ThemeContext = createContext(defaultState)
 
 const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(defaultState.darkMode)
+
+  useEffect(() => {
+    const isDark = JSON.parse(localStorage.getItem("dark"))
+    if (isDark) {
+      setIsDarkMode(isDark)
+    }
+  }, [isDarkMode])
 
   return (
     <ThemeContext.Provider

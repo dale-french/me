@@ -11,7 +11,13 @@ const Header = () => {
       <Logo href="/" darkMode={darkMode}>
         D<span>/</span>F
       </Logo>
-      <button type="button" onClick={() => setDarkMode(!darkMode)}>
+      <button
+        type="button"
+        onClick={() => {
+          setDarkMode(!darkMode)
+          localStorage.setItem("dark", JSON.stringify(!darkMode))
+        }}
+      >
         Set Mode
       </button>
     </StyledHeader>
