@@ -2,7 +2,7 @@
   "name": "me",
   "private": true,
   "description": "My personal website",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Dale French <hello@dalefrench.dev>",
   "dependencies": {
     "babel-plugin-styled-components": "^1.10.7",
