@@ -10,6 +10,7 @@ import PropTypes from "prop-types"
 import Helmet from "react-helmet"
 
 import { createGlobalStyle } from "styled-components"
+import theme from "../utils/theme"
 import "normalize.css"
 
 const Layout = ({ children }) => {
@@ -45,6 +46,7 @@ const GlobalStyle = createGlobalStyle`
   }
   html, body, #___gatsby, #gatsby-focus-wrapper, main {
     height: 100%;
+    background: ${theme.colors.white}
   }
   h1 {
     font-size: 12rem;

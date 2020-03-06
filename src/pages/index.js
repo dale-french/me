@@ -60,15 +60,14 @@ const Section = styled.section`
   flex-direction: column;
   flex: 1;
   justify-content: center;
-  background: ${theme.colors.blue};
   text-align: center;
   h1 {
-    color: ${theme.colors.orange};
+    color: ${theme.colors.blue};
   }
   h2 {
-    color: ${theme.colors.white};
+    color: ${theme.colors.black};
     strong {
-      color: ${theme.colors.orange};
+      color: ${theme.colors.blue};
     }
     span {
       color: white;
@@ -82,10 +81,10 @@ const Section = styled.section`
 const Footer = styled.footer`
   padding-top: 2rem;
   p {
-    color: ${theme.colors.white};
+    color: ${theme.colors.black};
   }
   a {
-    color: ${theme.colors.orange};
+    color: ${theme.colors.blue};
     text-decoration-line: underline;
     text-decoration-style: dotted;
   }
