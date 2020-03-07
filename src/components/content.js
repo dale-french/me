@@ -24,20 +24,17 @@ const Section = styled.section`
   padding: 1.5rem 3rem;
   h1 {
     font-size: 8rem;
-    color: ${props =>
-      props.darkMode ? theme.colors.white : theme.colors.black};
+    color: ${props => props.theme.text};
 
     @media ${theme.devices.tablet} {
       font-size: 5rem;
     }
 
     span {
-      color: ${theme.colors.blue};
+      color: ${props => props.theme.primary};
     }
   }
   h3 {
-    color: ${props =>
-      props.darkMode ? theme.colors.white : theme.colors.black};
     font-size: 2.5rem;
 
     @media ${theme.devices.tablet} {
@@ -45,7 +42,7 @@ const Section = styled.section`
     }
 
     span {
-      color: ${theme.colors.blue};
+      color: ${props => props.theme.primary};
     }
   }
 `
