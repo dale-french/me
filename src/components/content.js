@@ -1,14 +1,11 @@
-import React, { useContext } from "react"
+import React from "react"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import theme from "../utils/theme"
-import ThemeContext from "../contexts/ThemeContext"
 
 function Content({ children }) {
-  const { darkMode } = useContext(ThemeContext)
-
-  return <Section darkMode={darkMode}>{children}</Section>
+  return <Section>{children}</Section>
 }
 
 Content.propTypes = {
