@@ -99,6 +99,8 @@ const GlobalStyle = createGlobalStyle`
       font-family: 'Roboto', sans-serif;
       font-size: 1.6rem;
       margin-bottom: 1rem;
+      color: ${props =>
+        props.darkMode ? theme.colors.white : theme.colors.black};
     }
   }
 `
