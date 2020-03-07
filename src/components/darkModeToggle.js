@@ -1,24 +1,14 @@
 import React from "react"
-import PropTypes from "prop-types"
 import styled, { css } from "styled-components"
-import theme from "../utils/theme"
+import { useTheme } from "../hooks"
 
-function DarkModeToggle({ darkMode, onClick }) {
+function DarkModeToggle() {
+  const [theme, toggleTheme] = useTheme()
   return (
-    <Toggle
-      darkMode={darkMode}
-      onClick={onClick}
-      aria-label={`Activate ${!darkMode ? "dark" : "light"} mode`}
-      title={`Activate ${!darkMode ? "dark" : "light"} mode`}
-    >
-      <Icon darkMode={darkMode} />
+    <Toggle darkMode={theme === "dark"} onClick={() => toggleTheme()}>
+      <Icon darkMode={theme === "dark"} />
     </Toggle>
   )
-}
-
-DarkModeToggle.propTypes = {
-  darkMode: PropTypes.bool,
-  onClick: () => {},
 }
 
 export { DarkModeToggle }
@@ -44,12 +34,12 @@ const Toggle = styled.button`
 `
 
 const darkModeStyles = () => css`
-  background-color: ${theme.colors.white};
+  background-color: ${props => props.theme.white};
   transform: scale(0.55);
   overflow: visible;
 
   &:before {
-    background-color: ${theme.colors.black};
+    background-color: ${props => props.theme.secondary};
     opacity: 0;
     transform: translate(14px, -14px);
     border-image: initial;
@@ -68,13 +58,13 @@ const darkModeStyles = () => css`
 `
 
 const lightModeStyles = () => css`
-  background-color: ${theme.colors.black};
+  background-color: ${props => props.theme.secondary};
   overflow: hidden;
   transform: scale(1);
 
   &:before {
-    background-color: ${theme.colors.white};
-    border-color: ${theme.colors.white};
+    background-color: ${props => props.theme.white};
+    border-color: ${props => props.theme.white};
     opacity: 1;
     transform: translate(0, 0);
     transition: transform 0.45s ease;

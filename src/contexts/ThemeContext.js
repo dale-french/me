@@ -5,11 +5,7 @@ import { ThemeProvider } from "styled-components"
 import { getTheme } from "../theme/getTheme"
 import { useTheme } from "../hooks"
 
-const defaultState = {
-  darkMode: false,
-  setDarkMode: () => {},
-}
-const ThemeContext = createContext(defaultState)
+const ThemeContext = createContext()
 
 const ThemeContextProvider = ({ children }) => {
   const [theme, toggleTheme] = useTheme()
@@ -17,7 +13,6 @@ const ThemeContextProvider = ({ children }) => {
   const [key, forceUpdate] = useState(0)
 
   useEffect(() => {
-    console.log(theme)
     // let react take care of dynamic styles
     forceUpdate(1)
     // after mounting, remove the class from body
@@ -25,12 +20,7 @@ const ThemeContextProvider = ({ children }) => {
   }, [])
 
   return (
-    <ThemeContext.Provider
-      value={{
-        darkMode: theme === "dark",
-        setDarkMode: toggleTheme,
-      }}
-    >
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <GlobalStyles theme={currentTheme} key={key} />
       <ThemeProvider theme={currentTheme}>{children}</ThemeProvider>
     </ThemeContext.Provider>

@@ -3,8 +3,8 @@ import { createElement } from "react"
 const applyDarkModeClass = `
 (function() {
   try {
-    var darkMode = localStorage.getItem('dark');
-    if (darkMode === 'true') {
+    var mode = localStorage.getItem('theme');
+    if (mode === 'dark') {
       document.body.classList.add('dark');
 		}
   } catch (e) {}
