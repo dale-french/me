@@ -98,6 +98,8 @@ const GlobalStyle = createGlobalStyle`
     li {
       font-family: 'Roboto', sans-serif;
       font-size: 1.6rem;
+      color: ${props =>
+        props.darkMode ? theme.colors.white : theme.colors.black};
       margin-bottom: 1rem;
     }
   }
