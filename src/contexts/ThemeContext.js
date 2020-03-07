@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from "react"
 import PropTypes from "prop-types"
+import GlobalStyles from "../theme/globalStyles"
 
 const defaultState = {
   darkMode: false,
@@ -24,6 +25,7 @@ const ThemeProvider = ({ children }) => {
         setDarkMode: setIsDarkMode,
       }}
     >
+      <GlobalStyles darkMode={isDarkMode} />
       {children}
     </ThemeContext.Provider>
   )
