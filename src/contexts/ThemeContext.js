@@ -12,8 +12,9 @@ const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(defaultState.darkMode)
 
   useEffect(() => {
-    const isDark = JSON.parse(localStorage.getItem("dark"))
+    const isDark = document.body.className === "dark"
     if (isDark) {
+      document.body.classList.remove("dark")
       setIsDarkMode(isDark)
     }
   }, [isDarkMode])
