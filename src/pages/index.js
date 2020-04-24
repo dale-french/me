@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import theme from "../utils/theme"
 import { Layout, Nav, SEO, Typist, Header } from "../components"
 
 const IndexPage = () => {
@@ -63,13 +62,7 @@ const Section = styled.section`
   justify-content: center;
   text-align: center;
   padding: 1.5rem 3rem;
-  h1 {
-    color: ${theme.colors.blue};
-  }
   h2 {
-    span {
-      color: white;
-    }
     .Cursor {
       visibility: hidden;
     }
@@ -79,7 +72,7 @@ const Section = styled.section`
 const Footer = styled.footer`
   padding-top: 2rem;
   a {
-    color: ${theme.colors.blue};
+    color: ${props => props.theme.primary};
     text-decoration-line: underline;
     text-decoration-style: dotted;
   }

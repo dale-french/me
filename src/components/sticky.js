@@ -1,14 +1,9 @@
-import React, { useContext } from "react"
+import React from "react"
 import styled from "styled-components"
 
-import ThemeContext from "../contexts/ThemeContext"
-import theme from "../utils/theme"
-
 const Sticky = () => {
-  const { darkMode } = useContext(ThemeContext)
-
   return (
-    <StyledSticky darkMode={darkMode}>
+    <StyledSticky>
       <div>
         <h3>Where to find me</h3>
         <Social
@@ -45,8 +40,7 @@ const StyledSticky = styled.section`
   right: 0;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
   padding: 1.5rem 3rem 1.6rem;
-  background-color: ${props =>
-    props.darkMode ? theme.colors.black : theme.colors.white};
+  background-color: ${props => props.theme.background};
 
   div {
     display: flex;
@@ -54,8 +48,7 @@ const StyledSticky = styled.section`
     align-items: center;
 
     h3 {
-      color: ${props =>
-        props.darkMode ? theme.colors.white : theme.colors.black};
+      color: ${props => props.theme.text};
       margin: 0;
       line-height: 1;
       margin-right: 1rem;
@@ -68,7 +61,7 @@ const Social = styled.a`
   padding: 0.7rem;
   line-height: 1;
   margin: 5px;
-  color: ${theme.colors.white};
+  color: ${props => props.theme.white};
   background: ${props => props.color};
   font-size: 1.6rem;
   border-radius: 5px;

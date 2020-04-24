@@ -1,25 +1,15 @@
-import React, { useContext } from "react"
+import React from "react"
 import styled from "styled-components"
-import ThemeContext from "../contexts/ThemeContext"
-import theme from "../utils/theme"
 import { DarkModeToggle } from "."
 
 const Header = () => {
-  const { darkMode, setDarkMode } = useContext(ThemeContext)
-
   return (
     <StyledHeader>
-      <Logo href="/" darkMode={darkMode}>
+      <Logo href="/">
         D<span>/</span>F
       </Logo>
       <ToggleContainer>
-        <DarkModeToggle
-          darkMode={darkMode}
-          onClick={() => {
-            setDarkMode(!darkMode)
-            localStorage.setItem("dark", JSON.stringify(!darkMode))
-          }}
-        />
+        <DarkModeToggle />
       </ToggleContainer>
     </StyledHeader>
   )
@@ -39,19 +29,18 @@ const StyledHeader = styled.header`
 const Logo = styled.a`
   font-family: "Catamaran", sans-serif;
   font-size: 2.7rem;
-  color: ${props => (props.darkMode ? theme.colors.white : theme.colors.black)};
+  color: ${props => props.theme.text};
   transition: color 0.25s ease-in-out;
   will-change: opacity;
   span {
-    color: ${theme.colors.blue};
+    color: ${props => props.theme.primary};
     transition: color 0.25s ease-in-out;
     will-change: opacity;
   }
   &:hover {
-    color: ${theme.colors.blue};
+    color: ${props => props.theme.primary};
     span {
-      color: ${props =>
-        props.darkMode ? theme.colors.white : theme.colors.black};
+      color: ${props => props.theme.text};
     }
   }
 `
