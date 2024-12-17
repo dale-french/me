@@ -1,16 +1,16 @@
-import type { Route } from "./+types/home";
+import type { Route } from './+types/home'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Dale French - Software Engineer" },
+    { title: 'Dale French - Software Engineer' },
     {
-      name: "description",
+      name: 'description',
       content:
-        "I'm an experienced Software Engineer / Engineering Manager based in Amsterdam.",
+        'I\'m an experienced Software Engineer / Engineering Manager based in Amsterdam.',
     },
-  ];
+  ]
 }
 
 export default function Home() {
-  return <p>Hello!</p>;
+  return <p>Hello!</p>
 }
