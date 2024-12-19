@@ -2,7 +2,7 @@ import type { Route } from './+types/home'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Dale French - Software Engineer' },
+    { title: 'Dale French - Software Engineer & Engineering Leader' },
     {
       name: 'description',
       content:
@@ -12,16 +12,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const handleChangeTheme = () => {
-    const savedTheme = document.documentElement.getAttribute('data-theme')
-    const newTheme = savedTheme === '🌚' ? '🌞' : '🌚'
-    document.documentElement.setAttribute('data-theme', newTheme)
-    localStorage.setItem('theme', newTheme)
-  }
-
-  return (
-    <button onClick={handleChangeTheme}>
-      Switch Theme
-    </button>
-  )
+  return null
 }

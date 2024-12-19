@@ -1,0 +1,23 @@
+.logo {
+  a {
+    font-weight: 900;
+    font-size: 2.7rem;
+    color: var(--color-text-secondary);
+    transition: color 0.25s ease-in-out;
+    will-change: opacity;
+
+    span {
+      color: var(--color-text-primary);
+      transition: color 0.25s ease-in-out;
+      will-change: opacity;
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+
+      span {
+        color: var(--color-text-secondary);
+      }
+    }
+  }
+}

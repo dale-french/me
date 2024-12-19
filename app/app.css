@@ -1,20 +1,60 @@
 :root {
-  --base: #cfcfcf;
-  --text: #212121;
+  /* light colors */
+  --color-sandveld: #F0F0F0;
+  --color-oceanview: #E0E7EA;
+  --color-goldreef: #DAA001;
+  --color-stormberg: #403F53;
+  --color-umgeni: #08916A;
+  --color-baviaans: #2AA298;
+  --color-mistbelt: #E9E9E9;
+
+  /* dark colors */
+  --color-karoo: #011627;
+  --color-springbok: #82AAFF;
+  --color-kruger: #D6DEEB;
+  --color-fynbos: #ADDB67;
+  --color-jacaranda: #7E57C2;
+  --color-timbavati: #0A151F;
+
+  /* shared colors */
+  --color-drakensberg: #1D3B53;
+
+  /* spacing */
+  --spacing-100: 4px;
+  --spacing-200: 8px;
+  --spacing-300: 12px;
+  --spacing-400: 16px;
+  --spacing-500: 24px;
+  --spacing-600: 32px;
+}
+
+html[data-theme="🌞"] {
+  --color-background: var(--color-sandveld);
+  --color-text-primary: var(--color-umgeni);
+  --color-text-secondary: var(--color-karoo);
 }
 
 html[data-theme="🌚"] {
-  --base: #212121;
-  --text: #cfcfcf;
+  --color-background: var(--color-karoo);
+  --color-text-primary: var(--color-jacaranda);
+  --color-text-secondary: var(--color-sandveld);
 }
 
 html {
   color-scheme: light dark;
+  font-size: 10px;
 }
 
 body {
-  color: var(--text);
-  background-color: var(--base);
-  font-family: system-ui;
-  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  font-family: "Catamaran", serif;
+  font-optical-sizing: auto;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
 }

@@ -1,0 +1,8 @@
+.main {
+  header {
+    padding: var(--spacing-600);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
