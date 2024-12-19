@@ -4,12 +4,11 @@
     font-size: 2.7rem;
     color: var(--color-text-secondary);
     transition: color 0.25s ease-in-out;
-    will-change: opacity;
+    text-decoration: none;
 
     span {
       color: var(--color-text-primary);
       transition: color 0.25s ease-in-out;
-      will-change: opacity;
     }
 
     &:hover {

@@ -1,4 +1,5 @@
 import type { Route } from './+types/home'
+import { Link } from 'react-router'
 import TypeIt from 'typeit-react'
 import styles from './home.module.css'
 
@@ -52,6 +53,7 @@ export default function Home() {
           }}
         />
       </div>
+      <Link to="about">About me</Link>
     </div>
   )
 }
