@@ -16,7 +16,8 @@
     "isbot": "^5.1.17",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.0.2"
+    "react-router": "^7.0.2",
+    "typeit-react": "^2.7.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.0",
