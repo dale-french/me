@@ -52,9 +52,14 @@ body {
   font-optical-sizing: auto;
   font-size: 1.4rem;
   margin: 0;
+  height: 100vh;
 }
 
 a {
   color: var(--color-text);
   text-decoration: none;
+}
+
+p {
+  line-height: 1;
 }

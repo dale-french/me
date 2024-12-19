@@ -1,8 +1,42 @@
 .main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   header {
     padding: var(--spacing-600);
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  section {
+    padding: var(--spacing-600);
+  }
+
+  footer {
+    padding: var(--spacing-600);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-300);
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-200);
+    }
+
+    p {
+      color: var(--color-text-secondary);
+      margin: 0;
+      text-align: center;
+      font-size: 1.2rem;
+
+      a {
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+      }
+    }
   }
 }

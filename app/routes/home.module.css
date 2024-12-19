@@ -13,4 +13,8 @@
     font-size: 3rem;
     color: var(--color-text-secondary);
   }
+
+  .typeit_container {
+    min-height: 200px;
+  }
 }
