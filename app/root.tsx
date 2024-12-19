@@ -35,6 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           const savedTheme = localStorage.getItem('theme');
           const theme = savedTheme || (userPrefersDark ? '🌚' : '🌞');
           document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
         </script>
         <Meta />
         <Links />

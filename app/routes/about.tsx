@@ -12,7 +12,9 @@ export default function About() {
   return (
     <div className={styles.about}>
       <h2>
-        Hi 👋! My name is Dale, and I have spent over
+        Hi 👋
+        <br />
+        My name is Dale, and I have spent over
         {' '}
         <span>
           {yearsOfExperience}

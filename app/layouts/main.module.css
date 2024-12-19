@@ -29,6 +29,10 @@
       display: flex;
       justify-content: center;
       gap: var(--spacing-200);
+      
+      a {
+        color: var(--color-text-primary)
+      }
     }
 
     p {

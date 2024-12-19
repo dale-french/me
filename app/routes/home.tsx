@@ -24,7 +24,7 @@ export default function Home() {
           as="h2"
           getBeforeInit={(instance) => {
             instance
-              .type('A Frontend Engineer who likes building stuff')
+              .type('A Frontend Engineer who likes building products')
               .break()
               .type('with React')
               .pause(750)
@@ -43,7 +43,7 @@ export default function Home() {
               .pause(750)
               .type(' 💜')
               .pause(750)
-              .move(-43)
+              .move(-46)
               .pause(750)
               .delete(18)
               .pause(750)
