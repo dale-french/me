@@ -12,5 +12,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <p>Hello!</p>
+  const handleChangeTheme = () => {
+    const savedTheme = document.documentElement.getAttribute('data-theme')
+    const newTheme = savedTheme === '🌚' ? '🌞' : '🌚'
+    document.documentElement.setAttribute('data-theme', newTheme)
+    localStorage.setItem('theme', newTheme)
+  }
+
+  return (
+    <button onClick={handleChangeTheme}>
+      Switch Theme
+    </button>
+  )
 }

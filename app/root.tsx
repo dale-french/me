@@ -30,6 +30,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script>
+          const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const savedTheme = localStorage.getItem('theme');
+          const theme = savedTheme || (userPrefersDark ? '🌚' : '🌞');
+          document.documentElement.setAttribute('data-theme', theme);
+        </script>
         <Meta />
         <Links />
       </head>
