@@ -1,28 +1,9 @@
-/*
- * Design tokens. All values that vary by theme/brand or are referenced from
- * multiple places live here. Component-local values stay in components.
- */
-
 :root {
-  /* Opacity for inactive segments and other muted text. Wired as a custom
-     property so transitions can interpolate it. */
-  --alpha-faded: 0.2;
-
-  /* Neue Haas Grotesk metrics — used by inline icons and the typed cursor.
-     Change these together with the font. */
-  --font-cap-height: 0.715em;
-  --font-x-height: 0.513em;
-  --icon-stroke: 0.12em;
-
-  /* Tap padding around small interactive elements (links, copy affordance). */
   --link-enlargement: 0.4rem;
   --link-outline: calc(var(--link-enlargement) / 2);
-}
 
-@media (min-width: 60rem) {
-  :root {
-    --link-enlargement: 0.6rem;
-  }
+  /* How much of the footer peeks above the viewport bottom on first paint. */
+  --split-offset: clamp(60px, 8vh, 120px);
 }
 
 ::selection {

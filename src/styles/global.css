@@ -10,6 +10,16 @@
   --color-fg: #000000;
   --color-bg: #ffffff;
   --color-accent: #ff4400;
+  --color-faded: rgb(0 0 0 / 0.2);
+  --color-surface-faded: rgb(255 255 255 / 0.2);
+
+  --text-hero: clamp(2rem, 7vw, 6.5rem);
+  --text-body: clamp(1.125rem, 1.4vw, 1.5rem);
+
+  --spacing-inset: clamp(1rem, 4vw, 4rem);
+  --spacing-block: clamp(1rem, 2vw, 2rem);
+
+  --radius-link: 0.4rem;
 }
 
 @import "./tokens.css";
@@ -19,6 +29,8 @@ body {
   background-color: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

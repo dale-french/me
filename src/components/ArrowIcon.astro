@@ -18,13 +18,14 @@ const { class: className = "" } = Astro.props;
 </svg>
 
 <style>
-  /* :where() keeps specificity at 0 so consumer classes (e.g. h-4) override. */
+  /* :where() keeps specificity at 0 so consumer classes (e.g. h-4) override.
+     Sized in em so the icon tracks its container's font-size. */
   :where(.arrow-icon) {
     display: inline-block;
-    height: var(--font-x-height);
+    height: 0.5em;
     width: auto;
     overflow: visible;
-    stroke-width: var(--icon-stroke);
+    stroke-width: 0.12em;
     vertical-align: baseline;
   }
 </style>

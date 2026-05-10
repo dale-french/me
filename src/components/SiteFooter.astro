@@ -44,7 +44,7 @@ const year = new Date().getFullYear();
   <section class="bookend">
     <div class="year-block">
       <a href="/" class="home-link" aria-label="Home">
-        <Logo class="h-6 w-6" bg="black" fg="white" />
+        <Logo bg="black" fg="white" />
       </a>
       <p class="year">{year}</p>
     </div>
@@ -73,35 +73,35 @@ const year = new Date().getFullYear();
     position: relative;
     display: grid;
     grid-template-columns: 1fr min-content;
-    column-gap: 2rem;
-    row-gap: clamp(6rem, 16vh, 12rem);
+    column-gap: var(--spacing-block);
+    row-gap: 33vh;
     min-height: 38.2vh;
-    padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 5vw, 6rem)
-      calc(clamp(2.5rem, 5vw, 5rem) + env(safe-area-inset-bottom, 0px));
-    background-color: rgb(255 255 255 / 0.6);
-    backdrop-filter: blur(0.666em);
-    -webkit-backdrop-filter: blur(0.666em);
+    padding: var(--spacing-block)
+      calc(var(--spacing-inset) + env(safe-area-inset-right, 0px))
+      calc(var(--spacing-block) + env(safe-area-inset-bottom, 0px))
+      calc(var(--spacing-inset) + env(safe-area-inset-left, 0px));
+    background-color: var(--color-surface-faded);
+    backdrop-filter: blur(0.42rem);
+    -webkit-backdrop-filter: blur(0.42rem);
     font-family: var(--font-display);
     font-weight: 500;
     color: var(--color-fg);
   }
 
   .contact-list {
+    font-size: var(--text-body);
     display: grid;
     grid-auto-rows: max-content;
-    row-gap: 1rem;
-    font-size: 1.875rem;
-    line-height: 1.15;
-  }
-
-  @media (min-width: 48rem) {
-    .contact-list {
-      font-size: 2.25rem;
-    }
+    row-gap: 0.5em;
   }
 
   .contact-list li {
     position: relative;
+  }
+
+  /* Extra breathing room below the first contact (Email). */
+  .contact-list li:first-child {
+    margin-bottom: 0.5em;
   }
 
   .contact-link {
@@ -110,7 +110,7 @@ const year = new Date().getFullYear();
     gap: 0.5rem;
     margin-inline: calc(-1 * var(--link-enlargement));
     padding-inline: var(--link-enlargement);
-    border-radius: 0.4rem;
+    border-radius: var(--radius-link);
     white-space: nowrap;
     cursor: pointer;
     -webkit-tap-highlight-color: rgb(0 0 0 / 0.066);
@@ -127,12 +127,12 @@ const year = new Date().getFullYear();
 
   .copy-link {
     display: none;
-    margin-left: 0.75rem;
     padding-inline: var(--link-enlargement);
-    margin-inline-start: calc(-1 * var(--link-enlargement));
-    border-radius: 0.4rem;
-    color: rgb(0 0 0 / var(--alpha-faded));
-    font-size: 1rem;
+    margin-inline-start: calc(
+      -1 * var(--link-enlargement) + var(--spacing-block)
+    );
+    border-radius: var(--radius-link);
+    color: var(--color-faded);
     cursor: copy;
     opacity: 0;
     visibility: hidden;
@@ -162,32 +162,37 @@ const year = new Date().getFullYear();
   }
 
   .copy-link-icon {
-    margin-left: var(--font-x-height);
+    margin-left: 0.5em;
   }
 
   .bookend {
+    font-size: var(--text-lg);
     grid-column: 1 / -1;
     grid-row: 2;
     display: grid;
     grid-template-columns: max-content 1fr;
     align-items: end;
-    column-gap: 2rem;
-    font-size: 1rem;
+    column-gap: var(--spacing-block);
   }
 
   .year-block {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.5em;
   }
 
   .home-link {
     display: inline-flex;
     margin: calc(-1 * var(--link-enlargement));
     padding: var(--link-enlargement);
-    border-radius: 0.4rem;
+    border-radius: var(--radius-link);
     color: var(--color-fg);
     transition: transform 150ms ease-out;
+  }
+
+  .home-link :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .home-link:active {
