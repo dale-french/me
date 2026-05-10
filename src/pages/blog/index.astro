@@ -1,10 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import Footer from "../../components/Footer.astro";
 import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
+import Layout from "../../layouts/Layout.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
 const posts = (await getCollection("blog")).sort(
@@ -12,46 +12,40 @@ const posts = (await getCollection("blog")).sort(
 );
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  </head>
-  <body class="bg-white font-sans text-slate-700 antialiased">
-    <Header />
-    <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <h1
-        class="mb-10 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
-      >
-        Blog
-      </h1>
-      <ul class="space-y-10">
-        {
-          posts.map((post) => (
-            <li>
-              <a href={`/blog/${post.id}/`} class="group block">
-                {post.data.heroImage && (
-                  <Image
-                    width={720}
-                    height={360}
-                    src={post.data.heroImage}
-                    alt=""
-                    class="mb-4 aspect-[2/1] w-full rounded-xl object-cover transition-opacity group-hover:opacity-90"
-                  />
-                )}
-                <FormattedDate date={post.data.pubDate} />
-                <h2 class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 group-hover:text-slate-700">
-                  {post.data.title}
-                </h2>
-                {post.data.description && (
-                  <p class="mt-2 text-slate-600">{post.data.description}</p>
-                )}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </main>
-    <Footer />
-  </body>
-</html>
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Header />
+  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <h1
+      class="mb-10 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
+    >
+      Blog
+    </h1>
+    <ul class="space-y-10">
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`} class="group block">
+              {post.data.heroImage && (
+                <Image
+                  width={720}
+                  height={360}
+                  src={post.data.heroImage}
+                  alt=""
+                  class="mb-4 aspect-[2/1] w-full rounded-xl object-cover transition-opacity group-hover:opacity-90"
+                />
+              )}
+              <FormattedDate date={post.data.pubDate} />
+              <h2 class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 group-hover:text-slate-700">
+                {post.data.title}
+              </h2>
+              {post.data.description && (
+                <p class="mt-2 text-slate-600">{post.data.description}</p>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+  <SiteFooter />
+</Layout>

@@ -1,0 +1,16 @@
+export default [
+  "",
+  "",
+  "",
+  " I'm building things.",
+  " I'm shipping software.",
+  " I've worked across the stack.",
+  " I've built and broken a lot of things.",
+  " I take on interesting problems.",
+  " I've shipped to production for years.",
+  " I care about what I make.",
+  " I value craft and pace,^250 in that order.",
+  " I work on things that last.",
+  " I've collaborated with great teams.",
+  " I'm always working on something.",
+] as const satisfies readonly string[];

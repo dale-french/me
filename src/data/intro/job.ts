@@ -1,0 +1,16 @@
+export default [
+  " I build for the web.",
+  " I'm a software engineer.",
+  " I write code.",
+  " I make things on the internet.",
+  " I'm a web developer.",
+  " I work on web applications.",
+  " I'm a full‑stack engineer.",
+  " I ship software.",
+  " I work in TypeScript,^250 mostly.",
+  " I build user interfaces.",
+  " I do this for a living.",
+  " I help build digital products.",
+  " I'm a generalist.",
+  " I'm comfortable across the stack.",
+] as const satisfies readonly string[];

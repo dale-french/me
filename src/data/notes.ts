@@ -1,0 +1,38 @@
+/**
+ * Random one-liners shown in the footer's bookend. A new one is picked each
+ * time the bookend leaves the viewport. Inline `<em>` is preserved.
+ */
+export const footerNotes: readonly string[] = [
+  "So it goes.",
+  "Same as it ever was.",
+  "It's a process.",
+  "Onward and upward.",
+  "Gradually, then suddenly.",
+  "Such is life.",
+  "Cool? Cool.",
+  "And yet.",
+  "Same.",
+  "Bear with!",
+  "Carry on.",
+  "Work in progress.",
+  "Shipping soon.",
+  "More to come.",
+  "Stay tuned.",
+  "Be right back.",
+  "Building.",
+  "It's the journey.",
+  "Trust the process.",
+  "Be excellent.",
+  "Keep going.",
+  "Make it good.",
+  "Sweat the details.",
+  "Less, but better.",
+  "Refactor later.",
+  "Ship it.",
+  "Touch grass.",
+  "Drink water.",
+  "Read the docs.",
+  "Always be learning.",
+  "Take notes.",
+  "Save your work.",
+];

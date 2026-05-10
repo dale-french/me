@@ -6,12 +6,19 @@
     var(--font-neue-haas-grotesk-text), ui-sans-serif, system-ui, sans-serif;
   --font-display:
     var(--font-neue-haas-grotesk-display), ui-sans-serif, system-ui, sans-serif;
+
+  --color-fg: #000000;
+  --color-bg: #ffffff;
+  --color-accent: #ff4400;
 }
 
-:root {
-  /* Neue Haas Grotesk metrics — used by inline icons so they sit on the
-     x-height of the surrounding text. Change these together with the font. */
-  --font-x-height: 0.513em;
-  --font-cap-height: 0.715em;
-  --icon-stroke: 0.12em;
+@import "./tokens.css";
+@import "./parallax.css";
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

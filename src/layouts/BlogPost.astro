@@ -2,7 +2,9 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
 import Layout from "./Layout.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -10,6 +12,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
+  <Header />
   <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
     <article>
       {
@@ -43,4 +46,5 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
       </div>
     </article>
   </main>
+  <SiteFooter />
 </Layout>

@@ -1,0 +1,17 @@
+export default [
+  " Let's chat.",
+  " Let's connect.",
+  " Drop me a line.",
+  " Say hello.",
+  " HMU.",
+  " AMA.",
+  " Let's build something.",
+  " Let's work together.",
+  " What can I help with?",
+  " What's on your mind?",
+  " I'd love to hear from you.",
+  " Always happy to talk shop.",
+  " Reach out any time.",
+  " Let's compare notes.",
+  " Let's make something good.",
+] as const satisfies readonly string[];

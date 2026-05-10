@@ -1,13 +1,11 @@
 ---
-import Intro from "../components/Intro.astro";
+import Hero from "../components/Hero.astro";
 import Layout from "../layouts/Layout.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 ---
 
-<Layout
-  title={SITE_TITLE}
-  description={SITE_DESCRIPTION}
-  bodyClass="bg-white font-display font-medium text-slate-700 antialiased"
->
-  <Intro />
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Hero />
+  <SiteFooter />
 </Layout>

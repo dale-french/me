@@ -1,0 +1,213 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import CopyIcon from "./CopyIcon.astro";
+import Logo from "./Logo.astro";
+import { contactLinks } from "../data/links";
+import { footerNotes } from "../data/notes";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer depth-layer">
+  <ul class="contact-list">
+    {
+      contactLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            rel={link.external ? "me noopener" : "me"}
+            target={link.external ? "_blank" : undefined}
+            class="contact-link"
+          >
+            {link.label}&#8197;
+            <span>
+              <ArrowIcon />
+            </span>
+          </a>
+          {link.copy && (
+            <p
+              class="copy-link"
+              data-copy={link.copy}
+              role="button"
+              tabindex="0"
+              aria-label={`Copy ${link.copy}`}
+            >
+              {link.copy}
+              <CopyIcon class="copy-link-icon" />
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <section class="bookend">
+    <div class="year-block">
+      <a href="/" class="home-link" aria-label="Home">
+        <Logo class="h-6 w-6" bg="black" fg="white" />
+      </a>
+      <p class="year">{year}</p>
+    </div>
+    <ul class="notes" data-notes>
+      {footerNotes.map((n) => <li set:html={n} />)}
+    </ul>
+  </section>
+</footer>
+
+<script>
+  import { mountClipboardCopy } from "../scripts/clipboard-copy";
+  import { mountRandomNote } from "../scripts/random-note";
+
+  document
+    .querySelectorAll<HTMLElement>(".copy-link")
+    .forEach(mountClipboardCopy);
+
+  const bookend = document.querySelector<HTMLElement>(".bookend");
+  const notes = document.querySelector<HTMLUListElement>("[data-notes]");
+  if (bookend && notes) mountRandomNote(bookend, notes);
+</script>
+
+<style>
+  .site-footer {
+    --depth: 0.25;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    column-gap: 2rem;
+    row-gap: clamp(6rem, 16vh, 12rem);
+    min-height: 38.2vh;
+    padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 5vw, 6rem)
+      calc(clamp(2.5rem, 5vw, 5rem) + env(safe-area-inset-bottom, 0px));
+    background-color: rgb(255 255 255 / 0.6);
+    backdrop-filter: blur(0.666em);
+    -webkit-backdrop-filter: blur(0.666em);
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  .contact-list {
+    display: grid;
+    grid-auto-rows: max-content;
+    row-gap: 1rem;
+    font-size: 1.875rem;
+    line-height: 1.15;
+  }
+
+  @media (min-width: 48rem) {
+    .contact-list {
+      font-size: 2.25rem;
+    }
+  }
+
+  .contact-list li {
+    position: relative;
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-inline: calc(-1 * var(--link-enlargement));
+    padding-inline: var(--link-enlargement);
+    border-radius: 0.4rem;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgb(0 0 0 / 0.066);
+  }
+
+  .contact-link:active {
+    background-color: rgb(0 0 0 / 0.066);
+  }
+
+  .contact-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: var(--link-outline);
+  }
+
+  .copy-link {
+    display: none;
+    margin-left: 0.75rem;
+    padding-inline: var(--link-enlargement);
+    margin-inline-start: calc(-1 * var(--link-enlargement));
+    border-radius: 0.4rem;
+    color: rgb(0 0 0 / var(--alpha-faded));
+    font-size: 1rem;
+    cursor: copy;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 200ms ease-in,
+      visibility 0s linear 200ms;
+  }
+
+  @media (min-width: 48rem) {
+    .copy-link {
+      display: inline-block;
+    }
+  }
+
+  .contact-link:hover ~ .copy-link,
+  .contact-link:focus-visible ~ .copy-link,
+  .copy-link:hover,
+  .copy-link:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s, 0s;
+  }
+
+  .copy-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: var(--link-outline);
+  }
+
+  .copy-link-icon {
+    margin-left: var(--font-x-height);
+  }
+
+  .bookend {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: end;
+    column-gap: 2rem;
+    font-size: 1rem;
+  }
+
+  .year-block {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .home-link {
+    display: inline-flex;
+    margin: calc(-1 * var(--link-enlargement));
+    padding: var(--link-enlargement);
+    border-radius: 0.4rem;
+    color: var(--color-fg);
+    transition: transform 150ms ease-out;
+  }
+
+  .home-link:active {
+    transform: scale(0.9);
+  }
+
+  .home-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: var(--link-outline);
+  }
+
+  .notes {
+    text-align: right;
+  }
+
+  .notes li {
+    display: none;
+  }
+
+  .notes li.is-visible {
+    display: block;
+  }
+</style>
