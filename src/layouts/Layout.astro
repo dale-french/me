@@ -1,0 +1,28 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  bodyClass = "bg-white font-sans text-slate-700 antialiased",
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class={bodyClass}>
+    <Header />
+    <slot />
+    <Footer />
+  </body>
+</html>

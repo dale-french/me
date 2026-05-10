@@ -1,18 +1,9 @@
 ---
-import { SITE_TITLE } from "../consts";
-import HeaderLink from "./HeaderLink.astro";
+import Logo from "./Logo.astro";
 ---
 
-<header class="border-b border-slate-200">
-  <nav
-    class="mx-auto flex max-w-3xl items-center justify-between px-4 py-5 sm:px-6"
-  >
-    <a href="/" class="text-lg font-bold tracking-tight text-slate-900">
-      {SITE_TITLE}
-    </a>
-    <div class="flex items-center gap-6 text-sm">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/blog">Blog</HeaderLink>
-    </div>
-  </nav>
+<header class="px-6 pt-10 sm:px-10">
+  <a href="/" aria-label="Home" class="inline-block text-slate-900">
+    <Logo class="h-[76px] w-[76px]" bg="black" fg="white" />
+  </a>
 </header>

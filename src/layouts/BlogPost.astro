@@ -1,56 +1,46 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
-import Header from "../components/Header.astro";
+import Layout from "./Layout.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<html lang="en">
-  <head>
-    <BaseHead title={title} description={description} />
-  </head>
-
-  <body class="bg-white font-sans text-slate-700 antialiased">
-    <Header />
-    <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <article>
+<Layout title={title} description={description}>
+  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <article>
+      {
+        heroImage && (
+          <Image
+            width={1020}
+            height={510}
+            src={heroImage}
+            alt=""
+            class="mb-10 aspect-[2/1] w-full rounded-xl object-cover"
+          />
+        )
+      }
+      <header class="mb-10">
+        <FormattedDate date={pubDate} />
         {
-          heroImage && (
-            <Image
-              width={1020}
-              height={510}
-              src={heroImage}
-              alt=""
-              class="mb-10 aspect-[2/1] w-full rounded-xl object-cover"
-            />
+          updatedDate && (
+            <span class="ml-2 text-sm text-slate-500">
+              · Updated <FormattedDate date={updatedDate} />
+            </span>
           )
         }
-        <header class="mb-10">
-          <FormattedDate date={pubDate} />
-          {
-            updatedDate && (
-              <span class="ml-2 text-sm text-slate-500">
-                · Updated <FormattedDate date={updatedDate} />
-              </span>
-            )
-          }
-          <h1
-            class="mt-2 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
-          >
-            {title}
-          </h1>
-        </header>
-        <div class="prose prose-slate prose-lg max-w-none">
-          <slot />
-        </div>
-      </article>
-    </main>
-    <Footer />
-  </body>
-</html>
+        <h1
+          class="mt-2 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
+        >
+          {title}
+        </h1>
+      </header>
+      <div class="prose prose-slate prose-lg max-w-none">
+        <slot />
+      </div>
+    </article>
+  </main>
+</Layout>

@@ -7,3 +7,11 @@
   --font-display:
     var(--font-neue-haas-grotesk-display), ui-sans-serif, system-ui, sans-serif;
 }
+
+:root {
+  /* Neue Haas Grotesk metrics — used by inline icons so they sit on the
+     x-height of the surrounding text. Change these together with the font. */
+  --font-x-height: 0.513em;
+  --font-cap-height: 0.715em;
+  --icon-stroke: 0.12em;
+}

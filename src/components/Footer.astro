@@ -1,9 +1,137 @@
 ---
+import ArrowIcon from "./ArrowIcon.astro";
+import CopyIcon from "./CopyIcon.astro";
+import Logo from "./Logo.astro";
+
 const today = new Date();
+const notes = [
+  "So it goes.",
+  "Same as it ever was.",
+  "It’s a process.",
+  "Onward and upward.",
+  "Gradually, then suddenly.",
+  "Such is life.",
+  "Cool? Cool.",
+  "And yet.",
+  "Same.",
+  "Bear with!",
+];
 ---
 
 <footer
-  class="mx-auto max-w-3xl px-4 py-10 text-center text-sm text-slate-500 sm:px-6"
+  class="relative grid min-h-[38.2vh] grid-cols-[1fr_min-content] gap-x-8 gap-y-[33vh] bg-white/60 px-6 pt-10 pb-[calc(env(safe-area-inset-bottom,0px)+2.5rem)] font-display font-medium backdrop-blur-md sm:px-10"
 >
-  &copy; {today.getFullYear()} Dale French.
+  <ul id="contact" class="grid grid-cols-1 gap-y-4 text-3xl md:text-4xl">
+    <li>
+      <a
+        href="mailto:hello@dalefrench.dev"
+        rel="me"
+        class="peer inline-flex items-center gap-2 rounded -mx-1 px-1 active:bg-black/5"
+        target="_blank"
+      >
+        Email&#8197;
+        <span>
+          <ArrowIcon />
+        </span>
+      </a>
+      <p
+        class="copy-link invisible hidden cursor-copy pl-3 opacity-0 transition-[opacity,visibility] duration-200 peer-hover:visible peer-hover:opacity-100 peer-focus:visible peer-focus:opacity-100 hover:visible hover:opacity-100 focus:visible focus:opacity-100 md:inline-block"
+        tabindex="0"
+        onclick="navigator.clipboard.writeText(this.innerText.trim())"
+        onkeydown="event.keyCode==13&&this.click()"
+      >
+        hello@dalefrench.dev
+        <CopyIcon class="ml-[var(--font-x-height)]" />
+      </p>
+    </li>
+    <li>
+      <a
+        href="https://github.com/dale-french"
+        rel="me"
+        class="inline-flex items-center gap-2 rounded -mx-1 px-1 active:bg-black/5"
+      >
+        GitHub&#8197;
+        <span>
+          <ArrowIcon />
+        </span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://www.linkedin.com/in/dale-french-dev/"
+        rel="me"
+        class="inline-flex items-center gap-2 rounded -mx-1 px-1 active:bg-black/5"
+        target="_blank"
+      >
+        LinkedIn&#8197;
+        <span>
+          <ArrowIcon />
+        </span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/blog"
+        rel="me"
+        class="inline-flex items-center gap-2 rounded -mx-1 px-1 active:bg-black/5"
+      >
+        Blog&#8197;
+        <span>
+          <ArrowIcon />
+        </span>
+      </a>
+    </li>
+  </ul>
+
+  <section
+    id="bookend"
+    class="col-span-2 row-start-2 grid grid-cols-[max-content_1fr] items-end gap-x-8 text-base"
+  >
+    <section id="year" class="flex items-center gap-2">
+      <button
+        name="top"
+        aria-label="Back to top"
+        class="flex h-6 w-6 items-center justify-center transition-transform active:scale-90"
+        onclick="document.querySelector('header').scrollIntoView({behavior:'smooth',block:'start'})"
+      >
+        <Logo class="h-6 w-6" bg="black" fg="white" />
+      </button>
+      <p>{today.getFullYear()}</p>
+    </section>
+    <ul id="note" class="text-right">
+      {notes.map((n) => <li>{n}</li>)}
+    </ul>
+  </section>
 </footer>
+
+<style>
+  #note li {
+    display: none;
+  }
+  #note li.display {
+    display: block;
+  }
+</style>
+
+<script>
+  const bookend = document.getElementById("bookend");
+  const note = document.getElementById("note");
+  if (bookend && note) {
+    const items = note.children;
+    const VISIBLE = "display";
+    const pick = () =>
+      items[Math.floor(Math.random() * items.length)] as HTMLElement;
+    pick().classList.add(VISIBLE);
+
+    new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        const current = note.querySelector("." + VISIBLE);
+        const next = pick();
+        if (current && current !== next) {
+          current.classList.remove(VISIBLE);
+          next.classList.add(VISIBLE);
+        }
+      }
+    }).observe(bookend);
+  }
+</script>
