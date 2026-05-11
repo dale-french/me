@@ -3,33 +3,37 @@ import Logo from "./Logo.astro";
 import { introSegments } from "../data/intro";
 ---
 
-<section class="hero depth-layer">
-  <a href="/" class="brand" aria-label="Home">
-    <Logo bg="black" fg="white" size={64} />
-  </a>
+<div class="hero-stage depth-layer min-h-dvh">
+  <section
+    class="hero gap-y-16 px-12 pt-12 pb-4 sm:gap-y-20 sm:px-48 sm:pt-16 sm:pb-6"
+  >
+    <a href="/" class="brand" aria-label="Home">
+      <Logo bg="black" fg="white" size={72} />
+    </a>
 
-  <h1 class="hero-text">
-    <noscript>Hi there. I'm Dale French.</noscript>
+    <h1 class="hero-text text-4xl sm:text-5xl md:text-7xl">
+      <noscript>Hi there. I'm Dale French.</noscript>
+      {
+        introSegments.map((seg, i) => (
+          <>
+            {i > 0 && " "}
+            <span class="typed" id={`seg-${seg.id}`} />
+          </>
+        ))
+      }
+    </h1>
+
     {
-      introSegments.map((seg, i) => (
-        <>
-          {i > 0 && " "}
-          <span class="typed" id={`seg-${seg.id}`} />
-        </>
+      introSegments.map((seg) => (
+        <ul id={`seg-${seg.id}--strings`} class="typed-strings">
+          {seg.strings.map((s) => (
+            <li set:html={s} />
+          ))}
+        </ul>
       ))
     }
-  </h1>
-
-  {
-    introSegments.map((seg) => (
-      <ul id={`seg-${seg.id}--strings`} class="typed-strings">
-        {seg.strings.map((s) => (
-          <li set:html={s} />
-        ))}
-      </ul>
-    ))
-  }
-</section>
+  </section>
+</div>
 
 <script>
   import { startTypedSequence } from "../scripts/typed-sequence";
@@ -39,17 +43,14 @@ import { introSegments } from "../data/intro";
 </script>
 
 <style>
-  .hero {
+  .hero-stage {
     --depth: -2;
-    min-height: calc(100dvh - var(--split-offset));
-    display: grid;
-    grid-template-rows: max-content 1fr;
-    row-gap: calc(var(--spacing-block) * 2);
-    padding: var(--spacing-block)
-      calc(var(--spacing-inset) + env(safe-area-inset-right, 0px))
-      var(--spacing-block)
-      calc(var(--spacing-inset) + env(safe-area-inset-left, 0px));
     background-color: var(--color-bg);
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
     transition: opacity 1s ease-out;
   }
 
@@ -72,7 +73,6 @@ import { introSegments } from "../data/intro";
   .hero-text {
     align-self: start;
     font-family: var(--font-display);
-    font-size: var(--text-hero);
     line-height: 1;
     letter-spacing: 0;
     font-weight: 500;

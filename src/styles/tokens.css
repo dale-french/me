@@ -1,9 +1,6 @@
 :root {
   --link-enlargement: 0.4rem;
   --link-outline: calc(var(--link-enlargement) / 2);
-
-  /* How much of the footer peeks above the viewport bottom on first paint. */
-  --split-offset: clamp(60px, 8vh, 120px);
 }
 
 ::selection {

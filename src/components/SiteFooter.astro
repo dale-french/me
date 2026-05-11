@@ -8,7 +8,7 @@ import { footerNotes } from "../data/notes";
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer depth-layer">
+<footer class="site-footer depth-layer -mt-[30vh] px-12 py-4 sm:px-48 sm:py-12">
   <ul class="contact-list">
     {
       contactLinks.map((link) => (
@@ -71,15 +71,10 @@ const year = new Date().getFullYear();
   .site-footer {
     --depth: 0.25;
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr min-content;
-    column-gap: var(--spacing-block);
+    display: flex;
+    flex-direction: column;
     row-gap: 33vh;
     min-height: 38.2vh;
-    padding: var(--spacing-block)
-      calc(var(--spacing-inset) + env(safe-area-inset-right, 0px))
-      calc(var(--spacing-block) + env(safe-area-inset-bottom, 0px))
-      calc(var(--spacing-inset) + env(safe-area-inset-left, 0px));
     background-color: var(--color-surface-faded);
     backdrop-filter: blur(0.42rem);
     -webkit-backdrop-filter: blur(0.42rem);
@@ -89,10 +84,10 @@ const year = new Date().getFullYear();
   }
 
   .contact-list {
-    font-size: var(--text-body);
-    display: grid;
-    grid-auto-rows: max-content;
-    row-gap: 0.5em;
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .contact-list li {
@@ -128,9 +123,7 @@ const year = new Date().getFullYear();
   .copy-link {
     display: none;
     padding-inline: var(--link-enlargement);
-    margin-inline-start: calc(
-      -1 * var(--link-enlargement) + var(--spacing-block)
-    );
+    margin-inline-start: calc(-1 * var(--link-enlargement) + 1rem);
     border-radius: var(--radius-link);
     color: var(--color-faded);
     cursor: copy;
@@ -166,13 +159,11 @@ const year = new Date().getFullYear();
   }
 
   .bookend {
-    font-size: var(--text-lg);
-    grid-column: 1 / -1;
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-items: end;
-    column-gap: var(--spacing-block);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
   .year-block {

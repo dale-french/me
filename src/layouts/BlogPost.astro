@@ -12,8 +12,9 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
-  <Header />
-  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+  <div class="depth-layer min-h-dvh [--depth:-2]">
+    <Header />
+    <main class="mx-auto max-w-3xl px-12 py-12 sm:px-32">
     <article>
       {
         heroImage && (
@@ -22,7 +23,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
             height={510}
             src={heroImage}
             alt=""
-            class="mb-10 aspect-[2/1] w-full rounded-xl object-cover"
+            class="mb-10 aspect-2/1 w-full rounded-xl object-cover"
           />
         )
       }
@@ -45,6 +46,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
         <slot />
       </div>
     </article>
-  </main>
+    </main>
+  </div>
   <SiteFooter />
 </Layout>

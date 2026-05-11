@@ -13,8 +13,9 @@ const posts = (await getCollection("blog")).sort(
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <Header />
-  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+  <div class="depth-layer min-h-dvh [--depth:-2]">
+    <Header />
+    <main class="mx-auto max-w-3xl px-12 py-12 sm:px-32">
     <h1
       class="mb-10 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
     >
@@ -31,7 +32,7 @@ const posts = (await getCollection("blog")).sort(
                   height={360}
                   src={post.data.heroImage}
                   alt=""
-                  class="mb-4 aspect-[2/1] w-full rounded-xl object-cover transition-opacity group-hover:opacity-90"
+                  class="mb-4 aspect-2/1 w-full rounded-xl object-cover transition-opacity group-hover:opacity-90"
                 />
               )}
               <FormattedDate date={post.data.pubDate} />
@@ -46,6 +47,7 @@ const posts = (await getCollection("blog")).sort(
         ))
       }
     </ul>
-  </main>
+    </main>
+  </div>
   <SiteFooter />
 </Layout>
