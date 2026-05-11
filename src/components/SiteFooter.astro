@@ -44,7 +44,7 @@ const year = new Date().getFullYear();
   <section class="bookend">
     <div class="year-block">
       <a href="/" class="home-link" aria-label="Home">
-        <Logo bg="black" fg="white" />
+        <Logo bg="black" fg="white" size={32} />
       </a>
       <p class="year">{year}</p>
     </div>
@@ -188,11 +188,6 @@ const year = new Date().getFullYear();
     border-radius: var(--radius-link);
     color: var(--color-fg);
     transition: transform 150ms ease-out;
-  }
-
-  .home-link :global(svg) {
-    width: 1.5rem;
-    height: 1.5rem;
   }
 
   .home-link:active {

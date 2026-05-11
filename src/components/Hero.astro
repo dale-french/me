@@ -5,7 +5,7 @@ import { introSegments } from "../data/intro";
 
 <section class="hero depth-layer">
   <a href="/" class="brand" aria-label="Home">
-    <Logo bg="black" fg="white" />
+    <Logo bg="black" fg="white" size={64} />
   </a>
 
   <h1 class="hero-text">
@@ -64,11 +64,6 @@ import { introSegments } from "../data/intro";
     color: var(--color-fg);
   }
 
-  .brand :global(svg) {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
   .brand:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: var(--link-outline);
@@ -114,8 +109,8 @@ import { introSegments } from "../data/intro";
   .typed span {
     color: initial;
     font-family:
-      "Twemoji Mozilla", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji", sans-serif;
+      "Twemoji Mozilla", "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
     line-height: 0;
     display: inline-block;
     transform: translate(-0.05em, 0.05em);

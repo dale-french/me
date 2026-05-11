@@ -3,14 +3,17 @@ interface Props {
   class?: string;
   fg?: string;
   bg?: string;
+  size?: number;
 }
 
-const { class: className, fg = "currentColor", bg } = Astro.props;
+const { class: className, fg = "currentColor", bg, size } = Astro.props;
 ---
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 1254 1254"
+  width={size}
+  height={size}
   class={className}
   aria-label="Dale French"
   role="img"
