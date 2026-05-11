@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
@@ -15,39 +14,125 @@ const posts = (await getCollection("blog")).sort(
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
   <div class="depth-layer min-h-dvh [--depth:-2]">
     <Header />
-    <main class="mx-auto max-w-3xl px-12 py-12 sm:px-32">
-    <h1
-      class="mb-10 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
-    >
-      Blog
-    </h1>
-    <ul class="space-y-10">
-      {
-        posts.map((post) => (
-          <li>
-            <a href={`/blog/${post.id}/`} class="group block">
-              {post.data.heroImage && (
-                <Image
-                  width={720}
-                  height={360}
-                  src={post.data.heroImage}
-                  alt=""
-                  class="mb-4 aspect-2/1 w-full rounded-xl object-cover transition-opacity group-hover:opacity-90"
-                />
-              )}
-              <FormattedDate date={post.data.pubDate} />
-              <h2 class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 group-hover:text-slate-700">
-                {post.data.title}
-              </h2>
-              {post.data.description && (
-                <p class="mt-2 text-slate-600">{post.data.description}</p>
-              )}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <main class="px-12 pt-16 pb-24 sm:px-48 sm:pt-24">
+      <header class="mx-auto mb-16 max-w-[44rem] sm:mb-24">
+        <p class="page-eyebrow">Index</p>
+        <h1 class="page-title">Writing</h1>
+      </header>
+
+      <ul class="post-list mx-auto max-w-[44rem]">
+        {
+          posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}/`} class="post-row">
+                <FormattedDate date={post.data.pubDate} class="post-row__date" />
+                <div class="post-row__body">
+                  <h2 class="post-row__title">{post.data.title}</h2>
+                  {post.data.description && (
+                    <p class="post-row__desc">{post.data.description}</p>
+                  )}
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </main>
   </div>
   <SiteFooter />
 </Layout>
+
+<style>
+  .page-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin: 0 0 1.5rem;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-list li + li {
+    border-top: 1px solid color-mix(in srgb, var(--color-fg) 10%, transparent);
+  }
+
+  .post-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1.75rem 0;
+    color: var(--color-fg);
+    text-decoration: none;
+    transition: transform 280ms ease;
+  }
+
+  @media (min-width: 48rem) {
+    .post-row {
+      grid-template-columns: 8rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+      padding: 2.25rem 0;
+    }
+  }
+
+  .post-row :global(.post-row__date) {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    align-self: start;
+    padding-top: 0.4rem;
+  }
+
+  .post-row__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--color-fg);
+    margin: 0;
+    transition: color 220ms ease;
+  }
+
+  .post-row__desc {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  .post-row:hover .post-row__title,
+  .post-row:focus-visible .post-row__title {
+    color: var(--color-accent);
+  }
+
+  .post-row:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: var(--link-outline);
+    border-radius: var(--radius-link);
+  }
+</style>

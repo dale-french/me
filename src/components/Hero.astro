@@ -19,7 +19,7 @@ import { introSegments } from "../data/intro";
       <Fragment
         set:html={introSegments
           .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
-          .join("")}
+          .join(" ")}
       />
     </h1>
 
@@ -98,7 +98,6 @@ import { introSegments } from "../data/intro";
       opacity 375ms ease-out;
   }
 
-  :global(.typed--fresh),
   :global(.typed--active) {
     opacity: 1;
   }

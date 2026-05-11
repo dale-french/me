@@ -6,11 +6,14 @@
     var(--font-neue-haas-grotesk-text), ui-sans-serif, system-ui, sans-serif;
   --font-display:
     var(--font-neue-haas-grotesk-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 
   --color-fg: #000000;
   --color-bg: #ffffff;
   --color-accent: #ff4400;
   --color-faded: rgb(0 0 0 / 0.2);
+  --color-muted: rgb(0 0 0 / 0.55);
   --color-surface-faded: rgb(255 255 255 / 0.2);
 
   --radius-link: 0.4rem;
@@ -18,6 +21,7 @@
 
 @import "./tokens.css";
 @import "./parallax.css";
+@import "./prose.css";
 
 body {
   background-color: var(--color-bg);

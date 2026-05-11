@@ -10,6 +10,13 @@ export default defineConfig({
   site: "https://dalefrench.dev",
   integrations: [mdx(), sitemap()],
 
+  markdown: {
+    shikiConfig: {
+      theme: "github-light",
+      wrap: false,
+    },
+  },
+
   fonts: [
     {
       provider: fontProviders.local(),

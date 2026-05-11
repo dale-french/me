@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
@@ -8,45 +7,83 @@ import SiteFooter from "../components/SiteFooter.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
   <div class="depth-layer min-h-dvh [--depth:-2]">
     <Header />
-    <main class="mx-auto max-w-3xl px-12 py-12 sm:px-32">
-    <article>
-      {
-        heroImage && (
-          <Image
-            width={1020}
-            height={510}
-            src={heroImage}
-            alt=""
-            class="mb-10 aspect-2/1 w-full rounded-xl object-cover"
-          />
-        )
-      }
-      <header class="mb-10">
-        <FormattedDate date={pubDate} />
-        {
-          updatedDate && (
-            <span class="ml-2 text-sm text-slate-500">
-              · Updated <FormattedDate date={updatedDate} />
-            </span>
-          )
-        }
-        <h1
-          class="mt-2 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"
-        >
-          {title}
-        </h1>
-      </header>
-      <div class="prose prose-slate prose-lg max-w-none">
-        <slot />
-      </div>
-    </article>
+    <main class="px-12 pt-16 pb-24 sm:px-48 sm:pt-24">
+      <article class="mx-auto max-w-[44rem]">
+        <header class="mb-14 sm:mb-20">
+          <p class="post-meta">
+            <FormattedDate date={pubDate} class="post-meta__date" />
+            {
+              updatedDate && (
+                <span class="post-meta__updated">
+                  · Updated <FormattedDate date={updatedDate} class="post-meta__date" />
+                </span>
+              )
+            }
+          </p>
+          <h1 class="post-title">{title}</h1>
+          {
+            description && (
+              <p class="post-dek">{description}</p>
+            )
+          }
+        </header>
+        <div class="prose">
+          <slot />
+        </div>
+      </article>
     </main>
   </div>
   <SiteFooter />
 </Layout>
+
+<style>
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .post-meta :global(.post-meta__date) {
+    font-size: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+  }
+
+  .post-meta__updated {
+    color: var(--color-muted);
+  }
+
+  .post-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .post-dek {
+    margin-top: 1.25rem;
+    font-family: var(--font-sans);
+    font-size: clamp(1.125rem, 1.75vw, 1.5rem);
+    line-height: 1.45;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+</style>
