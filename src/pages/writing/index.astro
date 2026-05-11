@@ -14,7 +14,7 @@ const posts = (await getCollection("writing")).sort(
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
   <div class="min-h-dvh">
     <Header />
-    <main class="px-12 pt-16 pb-24 sm:px-48 sm:pt-24">
+    <main class="px-(--page-inline) pt-(--page-block-lg) pb-24">
       <header class="mb-12 max-w-[64rem] sm:mb-16">
         <h1 class="page-title">Writing</h1>
         <p class="page-dek">A running notebook on building software and the craft.</p>
@@ -120,6 +120,22 @@ const posts = (await getCollection("writing")).sort(
     color: var(--color-muted);
     align-self: start;
     padding-top: 0.4rem;
+  }
+
+  .post-row :global(.post-row__date)::before {
+    content: "";
+    display: inline-block;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--color-accent);
+    margin-right: 0.5rem;
+    transform: translateY(-0.25em);
+  }
+
+  @media (min-width: 48rem) {
+    .post-row :global(.post-row__date)::before {
+      display: none;
+    }
   }
 
   .post-row__body {
