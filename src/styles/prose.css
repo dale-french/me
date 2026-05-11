@@ -22,7 +22,12 @@
 
 /* Headings — top margin for separation from preceding block, bottom margin
    for the gap to the following block. Margins collapse, so adjacent rules
-   compose naturally. */
+   compose naturally. `scroll-margin-top` keeps anchor jumps off the very top
+   of the viewport. */
+.prose :is(h2, h3, h4) {
+  scroll-margin-top: 2rem;
+}
+
 .prose h2 {
   font-family: var(--font-display);
   font-weight: 500;

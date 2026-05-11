@@ -1,21 +1,22 @@
 ---
 import Logo from "./Logo.astro";
 import { introSegments } from "../data/intro";
+
+const staticIntro =
+  "Hi there. My name is Dale French, and I’m a frontend engineer and engineering manager based in Amsterdam.";
 ---
 
 <div class="hero-stage depth-layer min-h-dvh">
   <section
     class="hero px-page-x pt-page-y-md pb-4 sm:pb-6"
+    data-static-intro={staticIntro}
   >
     <a href="/" class="brand" aria-label="Home">
       <Logo class="w-(--logo-size) h-(--logo-size)" bg="black" fg="white" />
     </a>
 
     <h1 class="hero-text">
-      <noscript
-        >Hi there. My name is Dale French, and I’m a frontend engineer and
-        engineering manager based in Amsterdam.</noscript
-      >
+      <noscript>{staticIntro}</noscript>
       <Fragment
         set:html={introSegments
           .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
@@ -39,7 +40,21 @@ import { introSegments } from "../data/intro";
   import { startTypedSequence } from "../scripts/typed-sequence";
 
   const host = document.querySelector<HTMLElement>(".hero");
-  if (host) startTypedSequence(host, { pauseThreshold: 0.666 });
+  if (host) {
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced) {
+      const heroText = host.querySelector<HTMLElement>(".hero-text");
+      const fallback = host.dataset.staticIntro ?? "";
+      if (heroText && fallback) heroText.textContent = fallback;
+      host
+        .querySelectorAll<HTMLElement>('ul[id$="--strings"]')
+        .forEach((el) => el.remove());
+    } else {
+      startTypedSequence(host, { pauseThreshold: 0.666 });
+    }
+  }
 </script>
 
 <style>
@@ -90,9 +105,14 @@ import { introSegments } from "../data/intro";
   :global(.typed) {
     color: var(--color-fg);
     opacity: 0.2;
-    transition:
-      color 375ms ease-out,
-      opacity 375ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.typed) {
+      transition:
+        color 375ms ease-out,
+        opacity 375ms ease-out;
+    }
   }
 
   :global(.typed--active) {

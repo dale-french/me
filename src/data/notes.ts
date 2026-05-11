@@ -5,7 +5,7 @@
 export const footerNotes: readonly string[] = [
   "And so they say.",
   "The best is yet to come.",
-  "It's a process.",
+  "It’s a process.",
   "Onward and upward.",
   "Such is life.",
   "And yet here we are.",
@@ -17,7 +17,7 @@ export const footerNotes: readonly string[] = [
   "Stay tuned.",
   "Be right back.",
   "Probably building.",
-  "It's the journey.",
+  "It’s the journey.",
   "Trust the process.",
   "Be excellent.",
   "Keep going.",

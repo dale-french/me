@@ -82,3 +82,24 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: var(--link-outline);
 }
+
+/* Skip link — visually hidden until focused so keyboard users can jump past
+   the header straight to the page's main landmark. */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-link);
+  z-index: 100;
+  transform: translateY(-150%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}

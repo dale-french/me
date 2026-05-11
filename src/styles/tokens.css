@@ -1,4 +1,6 @@
 :root {
+  color-scheme: light;
+
   --link-enlargement: 0.4rem;
   --link-outline: calc(var(--link-enlargement) / 2);
 

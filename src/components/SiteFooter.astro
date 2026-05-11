@@ -35,16 +35,15 @@ const year = new Date().getFullYear();
             </span>
           </a>
           {link.copy && (
-            <p
+            <button
+              type="button"
               class="copy-link"
               data-copy={link.copy}
-              role="button"
-              tabindex="0"
               aria-label={`Copy ${link.copy}`}
             >
-              {link.copy}
+              <span data-copy-label>{link.copy}</span>
               <CopyIcon class="copy-link-icon" />
-            </p>
+            </button>
           )}
         </li>
       ))
@@ -62,6 +61,7 @@ const year = new Date().getFullYear();
       {footerNotes.map((n) => <li set:html={n} />)}
     </ul>
   </section>
+  <span class="sr-only" aria-live="polite" data-copy-status></span>
 </footer>
 
 <script>
@@ -69,7 +69,7 @@ const year = new Date().getFullYear();
   import { mountRandomNote } from "../scripts/random-note";
 
   document
-    .querySelectorAll<HTMLElement>(".copy-link")
+    .querySelectorAll<HTMLButtonElement>("button.copy-link")
     .forEach(mountClipboardCopy);
 
   const bookend = document.querySelector<HTMLElement>(".bookend");
@@ -131,11 +131,21 @@ const year = new Date().getFullYear();
 
   .copy-link {
     display: inline-block;
+    padding-block: 0;
     padding-inline: var(--link-enlargement);
     margin-inline-start: calc(-1 * var(--link-enlargement) + 1rem);
+    border: 0;
     border-radius: var(--radius-link);
+    background: transparent;
+    font: inherit;
     color: var(--color-faded);
+    text-align: start;
     cursor: copy;
+  }
+
+  .copy-link.is-copied {
+    color: var(--color-accent);
+    cursor: default;
   }
 
   @media (hover: hover) {
