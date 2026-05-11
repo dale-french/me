@@ -1,26 +1,15 @@
 import Typed from "typed.js";
-import { introSegments, type SegmentId } from "../data/intro";
 
-const ACTIVE = "typed--active";
-const TYPING = "typed--typing";
-const FRESH = "typed--fresh";
-const BACKGROUND = "typed--background";
+const delay = 750;
+const delayLong = delay * 2;
 
-const TYPE_SPEED = 40;
-const BACK_SPEED = 20;
-const HAND_OFF_DELAY = 750;
-const INITIAL_DELAY = 1500;
-
-interface SegmentInstance {
-  readonly id: SegmentId;
-  readonly el: HTMLElement;
-  readonly typed: Typed;
-}
-
-interface Options {
-  /** IntersectionObserver threshold below which the sequence pauses. */
-  pauseThreshold?: number;
-}
+const activeClass = "typed--active";
+const backgroundClass = "typed--background";
+const freshClass = "typed--fresh";
+const pausedClass = "typed--paused";
+const repeatingClass = "typed--repeating";
+const runningClass = "typed--running";
+const typingClass = "typed--typing";
 
 export interface TypedSequenceController {
   pause(): void;
@@ -28,141 +17,300 @@ export interface TypedSequenceController {
   destroy(): void;
 }
 
-/**
- * Starts a Typed.js-driven intro sequence inside `host`.
- *
- * Each segment is rendered server-side as `<span id="seg-{id}">` with its
- * strings sourced from `<ul id="seg-{id}--strings">`. On first pass segments
- * type in declaration order; afterwards a different segment is picked at
- * random after each completed string, matching MF's rolling rotation.
- */
+type TypedSelf = Typed & {
+  el: HTMLElement;
+  strings: string[];
+  sequence: number[];
+  arrayPos: number;
+  options: { stringsElement: string } & Record<string, unknown>;
+  afterDelay: number;
+  startDelay: number;
+  start: () => void;
+  stop: () => void;
+  reset: () => void;
+};
+
 export function startTypedSequence(
   host: HTMLElement,
-  options: Options = {},
+  options: { pauseThreshold?: number } = {},
 ): TypedSequenceController {
-  const pauseThreshold = options.pauseThreshold ?? 0.666;
+  const pauseThreshold = options.pauseThreshold ?? 0;
 
-  const segments: SegmentInstance[] = [];
-  let currentIndex = 0;
-  let firstPass = true;
+  let alreadyPaused = false;
+  let currentSentence: TypedSelf | null = null;
+  let firstRun = true;
+  const moreSentences: TypedSelf[] = [];
   let paused = false;
-  let pendingTimer: number | null = null;
+  let runCount = 0;
+  let sentences: TypedSelf[] = [];
+  let startTimeout: number | null = null;
 
-  function clearTimer() {
-    if (pendingTimer !== null) {
-      clearTimeout(pendingTimer);
-      pendingTimer = null;
-    }
+  function setTyping(self: TypedSelf) {
+    host
+      .querySelectorAll("." + typingClass)
+      .forEach((el) => el.classList.remove(typingClass));
+    self.el.classList.add(typingClass);
   }
 
-  function findEl(id: SegmentId): HTMLElement {
-    const el = host.querySelector<HTMLElement>(`#seg-${id}`);
-    if (!el) throw new Error(`Missing typed segment: #seg-${id}`);
-    return el;
+  function clearTyping(self: TypedSelf) {
+    self.el.classList.remove(typingClass);
   }
 
-  function setActive(idx: number) {
-    currentIndex = idx;
-    for (const s of segments) s.el.classList.remove(ACTIVE);
-    segments[idx].el.classList.add(ACTIVE);
+  function setActive(self: TypedSelf) {
+    currentSentence = self;
+    host
+      .querySelectorAll("." + activeClass)
+      .forEach((el) => el.classList.remove(activeClass));
+    self.el.classList.add(activeClass);
   }
 
-  function setTyping(idx: number) {
-    for (const s of segments) s.el.classList.remove(TYPING);
-    segments[idx].el.classList.add(TYPING);
-  }
-
-  function clearTyping(idx: number) {
-    segments[idx].el.classList.remove(TYPING);
-  }
-
-  function markFresh(idx: number) {
-    for (const s of segments) s.el.classList.remove(FRESH);
-    segments[idx].el.classList.add(FRESH);
-  }
-
-  function pickRandomOther(currentIdx: number): number {
-    if (segments.length <= 1) return currentIdx;
-    let pick: number;
-    do {
-      pick = Math.floor(Math.random() * segments.length);
-    } while (pick === currentIdx);
-    return pick;
-  }
-
-  function scheduleNext(currentIdx: number) {
-    if (paused) return;
-
-    let nextIdx: number;
-    if (firstPass) {
-      nextIdx = currentIdx + 1;
-      if (nextIdx >= segments.length) {
-        firstPass = false;
-        nextIdx = pickRandomOther(currentIdx);
-      }
+  function nextSentence(self: TypedSelf) {
+    self.stop();
+    const nextIndex = (sentences.indexOf(self) + 1) % sentences.length;
+    const next = sentences[nextIndex];
+    const nextString = next.strings[next.sequence[next.arrayPos]];
+    const extraDelay = nextIndex === 1 ? delay : 0;
+    if (paused) {
+      onPause(next);
     } else {
-      nextIdx = pickRandomOther(currentIdx);
+      setActive(next);
+      if (!nextString) {
+        next.start();
+      } else {
+        startTimeout = window.setTimeout(
+          () => next.start(),
+          delay + extraDelay,
+        );
+      }
     }
-
-    setActive(nextIdx);
-    pendingTimer = window.setTimeout(() => {
-      pendingTimer = null;
-      if (paused) return;
-      segments[nextIdx].typed.start();
-    }, HAND_OFF_DELAY);
   }
 
-  introSegments.forEach((seg, i) => {
-    const el = findEl(seg.id);
-    const typed = new Typed(`#seg-${seg.id}`, {
-      stringsElement: `#seg-${seg.id}--strings`,
-      typeSpeed: TYPE_SPEED,
-      backSpeed: BACK_SPEED,
-      backDelay: HAND_OFF_DELAY,
-      startDelay: i === 0 ? INITIAL_DELAY : 0,
-      shuffle: true,
-      loop: true,
-      smartBackspace: false,
-      showCursor: false,
-      autoInsertCss: false,
-      onStart: () => setTyping(i),
-      onTypingPaused: () => clearTyping(i),
-      onTypingResumed: () => setTyping(i),
-      onStringTyped: (_pos, self) => {
-        clearTyping(i);
-        markFresh(i);
-        // Halt the loop so this segment doesn't immediately backspace +
-        // retype. Another segment will take over via scheduleNext; when
-        // this one is picked again, .start() resumes from here, backspacing
-        // the current string before typing a new shuffled one.
+  function randomSentence(self: TypedSelf) {
+    self.stop();
+    const otherIndexes = Object.keys(sentences);
+    otherIndexes.splice(sentences.indexOf(self), 1);
+    let randomIndex = Number(
+      otherIndexes[Math.floor(Math.random() * otherIndexes.length)],
+    );
+    let random = sentences[randomIndex];
+    const previousString = random.strings[random.sequence[random.arrayPos]];
+    const nextString = random.strings[random.sequence[random.arrayPos + 1]];
+    let extraDelay = 0;
+    const currentElement = self.options.stringsElement;
+    if (paused) {
+      onPause(random);
+    } else if (nextString === previousString) {
+      random.afterDelay = 0;
+      random.start();
+      currentSentence = random;
+    } else {
+      if (firstRun) {
+        extraDelay = delayLong;
+        randomIndex = Math.floor(Math.random() * moreSentences.length);
+        random = moreSentences[randomIndex];
+      } else if (
+        currentElement.includes("seg-next") ||
+        currentElement.includes("seg-outro")
+      ) {
+        extraDelay = delay;
+      }
+      random.afterDelay = delay;
+      window.setTimeout(() => setActive(random), delay + extraDelay);
+      startTimeout = window.setTimeout(
+        () => random.start(),
+        delayLong + extraDelay,
+      );
+    }
+  }
+
+  function onPause(self: TypedSelf) {
+    if (startTimeout !== null) clearTimeout(startTimeout);
+    currentSentence = self;
+    host
+      .querySelectorAll("." + freshClass)
+      .forEach((el) => el.classList.remove(freshClass));
+    host.classList.add(pausedClass);
+    host.classList.add(repeatingClass);
+  }
+
+  function setPause() {
+    paused = true;
+  }
+
+  function clearPause() {
+    if (startTimeout !== null) clearTimeout(startTimeout);
+    paused = false;
+    host
+      .querySelectorAll("." + activeClass)
+      .forEach((el) => el.classList.remove(activeClass));
+    host.classList.remove(pausedClass);
+    window.setTimeout(() => {
+      if (currentSentence) setActive(currentSentence);
+    }, delay);
+    startTimeout = window.setTimeout(() => {
+      if (currentSentence) currentSentence.start();
+    }, delayLong);
+  }
+
+  const sharedOptions = {
+    afterDelay: delay,
+    autoInsertCss: false,
+    backDelay: delay,
+    backSpeed: 20,
+    loop: true,
+    loopCount: Infinity,
+    showCursor: false,
+    shuffle: true,
+    smartBackspace: false,
+    typeSpeed: 40,
+    onStart: (_pos: number, self: TypedSelf) => setTyping(self),
+    preStringTyped: (_pos: number, self: TypedSelf) => {
+      runCount = runCount + 1;
+      setTyping(self);
+      if (runCount === 1) host.classList.add(runningClass);
+      host
+        .querySelectorAll("." + freshClass)
+        .forEach((el) => el.classList.remove(freshClass));
+      self.el.classList.add(freshClass);
+    },
+    onTypingPaused: (_pos: number, self: TypedSelf) => clearTyping(self),
+    onTypingResumed: (_pos: number, self: TypedSelf) => setTyping(self),
+    onStringTyped: (_pos: number, self: TypedSelf) => {
+      clearTyping(self);
+      randomSentence(self);
+      if (runCount === 5) host.classList.add(repeatingClass);
+    },
+    afterBackspaced: (_pos: number, self: TypedSelf) => {
+      if (paused) {
         self.stop();
-        scheduleNext(i);
-      },
-    });
-    if (i !== 0) typed.stop();
-    segments.push({ id: seg.id, el, typed });
-  });
+        onPause(self);
+      }
+      clearTyping(self);
+    },
+    onLastStringBackspaced: (self: TypedSelf) => {
+      clearTyping(self);
+      randomSentence(self);
+      self.reset();
+    },
+  };
 
-  setActive(0);
-
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        host.classList.remove(BACKGROUND);
-        if (paused) {
-          paused = false;
-          clearTimer();
-          pendingTimer = window.setTimeout(() => {
-            pendingTimer = null;
-            segments[currentIndex].typed.start();
-          }, INITIAL_DELAY);
+  const initialSet = {
+    onBegin: (self: TypedSelf) => {
+      sentences.push(self);
+      self.stop();
+    },
+    onStringTyped: (_pos: number, self: TypedSelf) => {
+      clearTyping(self);
+      if (runCount === 5) host.classList.add(repeatingClass);
+      if (firstRun) {
+        const lastSentence = sentences[sentences.length - 1];
+        if (currentSentence === lastSentence) {
+          sentences = sentences.concat(moreSentences);
+          randomSentence(self);
+          firstRun = false;
+        } else {
+          nextSentence(self);
         }
       } else {
-        host.classList.add(BACKGROUND);
-        if (!paused) {
-          paused = true;
-          clearTimer();
-          for (const s of segments) s.typed.stop();
+        randomSentence(self);
+      }
+    },
+  };
+
+  const neverEmpty = {
+    onLastStringBackspaced: (self: TypedSelf) => {
+      clearTyping(self);
+      self.stop();
+      startTimeout = window.setTimeout(() => self.start(), delay);
+    },
+  };
+
+  const secondSet = {
+    onBegin: (self: TypedSelf) => {
+      moreSentences.push(self);
+      self.stop();
+    },
+  };
+
+  const hello = new Typed("#seg-hello", {
+    ...sharedOptions,
+    ...initialSet,
+    startDelay: delayLong,
+    stringsElement: "#seg-hello--strings",
+    onBegin: (self: TypedSelf) => {
+      sentences.push(self);
+      setActive(self);
+    },
+    onStop: (_self: TypedSelf) => {
+      if (firstRun) (hello as unknown as TypedSelf).startDelay = 0;
+    },
+  } as unknown as ConstructorParameters<typeof Typed>[1]) as unknown as TypedSelf;
+
+  new Typed("#seg-name", {
+    ...sharedOptions,
+    ...initialSet,
+    ...neverEmpty,
+    stringsElement: "#seg-name--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-job", {
+    ...sharedOptions,
+    ...initialSet,
+    ...neverEmpty,
+    stringsElement: "#seg-job--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-fact", {
+    ...sharedOptions,
+    ...secondSet,
+    stringsElement: "#seg-fact--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-live", {
+    ...sharedOptions,
+    ...secondSet,
+    stringsElement: "#seg-live--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-previous", {
+    ...sharedOptions,
+    ...initialSet,
+    stringsElement: "#seg-previous--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-next", {
+    ...sharedOptions,
+    ...initialSet,
+    ...neverEmpty,
+    stringsElement: "#seg-next--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  new Typed("#seg-outro", {
+    ...sharedOptions,
+    ...secondSet,
+    stringsElement: "#seg-outro--strings",
+  } as unknown as ConstructorParameters<typeof Typed>[1]);
+
+  document
+    .querySelectorAll('ul[id$="--strings"]')
+    .forEach((el) => el.remove());
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      if (entry.isIntersecting) {
+        host.classList.remove(backgroundClass);
+        if (paused && !alreadyPaused) clearPause();
+      } else {
+        host.classList.add(backgroundClass);
+        if (paused) {
+          alreadyPaused = true;
+        } else {
+          alreadyPaused = false;
+          if (currentSentence) {
+            onPause(currentSentence);
+            setPause();
+          }
         }
       }
     },
@@ -172,18 +320,13 @@ export function startTypedSequence(
 
   return {
     pause() {
-      paused = true;
-      clearTimer();
-      for (const s of segments) s.typed.stop();
+      setPause();
     },
     resume() {
-      paused = false;
-      segments[currentIndex].typed.start();
+      clearPause();
     },
     destroy() {
       observer.disconnect();
-      clearTimer();
-      for (const s of segments) s.typed.destroy();
     },
   };
 }

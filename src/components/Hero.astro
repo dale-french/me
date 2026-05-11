@@ -12,15 +12,15 @@ import { introSegments } from "../data/intro";
     </a>
 
     <h1 class="hero-text text-4xl sm:text-5xl md:text-7xl">
-      <noscript>Hi there. I'm Dale French.</noscript>
-      {
-        introSegments.map((seg, i) => (
-          <>
-            {i > 0 && " "}
-            <span class="typed" id={`seg-${seg.id}`} />
-          </>
-        ))
-      }
+      <noscript
+        >Hi there. My name is Dale French, and I’m a frontend engineer and
+        engineering manager based in Amsterdam.</noscript
+      >
+      <Fragment
+        set:html={introSegments
+          .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
+          .join("")}
+      />
     </h1>
 
     {
@@ -39,7 +39,7 @@ import { introSegments } from "../data/intro";
   import { startTypedSequence } from "../scripts/typed-sequence";
 
   const host = document.querySelector<HTMLElement>(".hero");
-  if (host) startTypedSequence(host);
+  if (host) startTypedSequence(host, { pauseThreshold: 0.666 });
 </script>
 
 <style>
@@ -86,12 +86,11 @@ import { introSegments } from "../data/intro";
     pointer-events: auto;
   }
 
-  /* Hidden until typed.js applies its own clip styles. */
-  .typed-strings {
+  :global(.typed-strings) {
     display: none;
   }
 
-  .typed {
+  :global(.typed) {
     color: var(--color-fg);
     opacity: 0.2;
     transition:
@@ -99,14 +98,12 @@ import { introSegments } from "../data/intro";
       opacity 375ms ease-out;
   }
 
-  /* Most-recently-typed and currently-typing segments stay full color. */
-  .typed--fresh,
-  .typed--active {
+  :global(.typed--fresh),
+  :global(.typed--active) {
     opacity: 1;
   }
 
-  /* Emoji span: match font, sit on the line, fade with parent. */
-  .typed span {
+  :global(.typed span) {
     color: initial;
     font-family:
       "Twemoji Mozilla", "Apple Color Emoji", "Segoe UI Emoji",
@@ -116,8 +113,7 @@ import { introSegments } from "../data/intro";
     transform: translate(-0.05em, 0.05em);
   }
 
-  /* Blinking caret on the active segment, in the accent color. */
-  .typed--active::after {
+  :global(.typed--active::after) {
     content: "|";
     color: var(--color-accent);
     margin-left: 0.02em;
@@ -125,7 +121,7 @@ import { introSegments } from "../data/intro";
     display: inline-block;
   }
 
-  .typed--active:not(.typed--typing)::after {
+  :global(.typed--active:not(.typed--typing)::after) {
     animation: caret-blink 750ms linear infinite;
   }
 
@@ -139,7 +135,7 @@ import { introSegments } from "../data/intro";
     }
   }
 
-  .hero.typed--background .typed--active::after {
+  .hero:global(.typed--background) :global(.typed--active::after) {
     animation-play-state: paused;
     opacity: 0;
   }
