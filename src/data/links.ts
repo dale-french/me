@@ -25,7 +25,7 @@ export const contactLinks: readonly ContactLink[] = [
     external: true,
   },
   {
-    label: "Blog",
-    href: "/blog",
+    label: "Writing",
+    href: "/writing",
   },
 ];

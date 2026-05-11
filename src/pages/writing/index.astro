@@ -6,7 +6,7 @@ import Layout from "../../layouts/Layout.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
-const posts = (await getCollection("blog")).sort(
+const posts = (await getCollection("writing")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
@@ -24,7 +24,7 @@ const posts = (await getCollection("blog")).sort(
         {
           posts.map((post) => (
             <li>
-              <a href={`/blog/${post.id}/`} class="post-row">
+              <a href={`/writing/${post.id}/`} class="post-row">
                 <FormattedDate date={post.data.pubDate} class="post-row__date" />
                 <div class="post-row__body">
                   <h2 class="post-row__title">
