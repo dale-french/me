@@ -11,7 +11,7 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
-  <div class="depth-layer min-h-dvh [--depth:-2]">
+  <div class="min-h-dvh">
     <Header />
     <main class="px-12 pt-16 pb-24 sm:px-48 sm:pt-24">
       <article class="mx-auto max-w-[44rem]">
@@ -39,7 +39,7 @@ const { title, description, pubDate, updatedDate } = Astro.props;
       </article>
     </main>
   </div>
-  <SiteFooter />
+  <SiteFooter flat />
 </Layout>
 
 <style>

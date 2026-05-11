@@ -5,10 +5,20 @@ import Logo from "./Logo.astro";
 import { contactLinks } from "../data/links";
 import { footerNotes } from "../data/notes";
 
+interface Props {
+  flat?: boolean;
+}
+
+const { flat = false } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer depth-layer -mt-[30vh] px-12 py-4 sm:px-48 sm:py-12">
+<footer
+  class:list={[
+    "site-footer depth-layer px-12 py-4 sm:px-48 sm:py-12",
+    flat ? "is-flat" : "-mt-[30vh]",
+  ]}
+>
   <ul class="contact-list">
     {
       contactLinks.map((link) => (
@@ -81,6 +91,10 @@ const year = new Date().getFullYear();
     font-family: var(--font-display);
     font-weight: 500;
     color: var(--color-fg);
+  }
+
+  .site-footer.is-flat {
+    --depth: 0;
   }
 
   .contact-list {

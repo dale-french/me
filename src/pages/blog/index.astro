@@ -12,22 +12,38 @@ const posts = (await getCollection("blog")).sort(
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <div class="depth-layer min-h-dvh [--depth:-2]">
+  <div class="min-h-dvh">
     <Header />
     <main class="px-12 pt-16 pb-24 sm:px-48 sm:pt-24">
-      <header class="mx-auto mb-16 max-w-[44rem] sm:mb-24">
-        <p class="page-eyebrow">Index</p>
+      <header class="mb-12 max-w-[64rem] sm:mb-16">
         <h1 class="page-title">Writing</h1>
+        <p class="page-dek">A running notebook on building software and the craft.</p>
       </header>
 
-      <ul class="post-list mx-auto max-w-[44rem]">
+      <ul class="post-list max-w-[64rem]">
         {
           posts.map((post) => (
             <li>
               <a href={`/blog/${post.id}/`} class="post-row">
                 <FormattedDate date={post.data.pubDate} class="post-row__date" />
                 <div class="post-row__body">
-                  <h2 class="post-row__title">{post.data.title}</h2>
+                  <h2 class="post-row__title">
+                    {post.data.title}
+                    <svg
+                      class="post-row__arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5 12h14M13 5l7 7-7 7"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </h2>
                   {post.data.description && (
                     <p class="post-row__desc">{post.data.description}</p>
                   )}
@@ -39,20 +55,10 @@ const posts = (await getCollection("blog")).sort(
       </ul>
     </main>
   </div>
-  <SiteFooter />
+  <SiteFooter flat />
 </Layout>
 
 <style>
-  .page-eyebrow {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin: 0 0 1.5rem;
-  }
-
   .page-title {
     font-family: var(--font-display);
     font-weight: 500;
@@ -61,6 +67,15 @@ const posts = (await getCollection("blog")).sort(
     letter-spacing: -0.02em;
     color: var(--color-fg);
     margin: 0;
+  }
+
+  .page-dek {
+    margin: 1.25rem 0 0;
+    font-family: var(--font-sans);
+    font-size: clamp(1.125rem, 1.75vw, 1.5rem);
+    line-height: 1.45;
+    color: var(--color-muted);
+    text-wrap: pretty;
   }
 
   .post-list {
@@ -79,10 +94,12 @@ const posts = (await getCollection("blog")).sort(
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.5rem;
-    padding: 1.75rem 0;
+    padding: 1.75rem 0.75rem;
+    margin-inline: -0.75rem;
+    border-radius: var(--radius-link);
     color: var(--color-fg);
     text-decoration: none;
-    transition: transform 280ms ease;
+    transition: background-color 220ms ease;
   }
 
   @media (min-width: 48rem) {
@@ -90,7 +107,7 @@ const posts = (await getCollection("blog")).sort(
       grid-template-columns: 8rem 1fr;
       gap: 2rem;
       align-items: baseline;
-      padding: 2.25rem 0;
+      padding: 2.5rem 0.75rem;
     }
   }
 
@@ -105,24 +122,48 @@ const posts = (await getCollection("blog")).sort(
     padding-top: 0.4rem;
   }
 
+  .post-row__body {
+    min-width: 0;
+  }
+
   .post-row__title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-size: clamp(1.625rem, 2.6vw, 2.25rem);
     line-height: 1.15;
     letter-spacing: -0.015em;
     color: var(--color-fg);
     margin: 0;
+    text-wrap: pretty;
     transition: color 220ms ease;
+  }
+
+  .post-row__arrow {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    margin-left: 0.4em;
+    color: var(--color-accent);
+    opacity: 0;
+    transform: translateX(-0.25em);
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
   }
 
   .post-row__desc {
     margin: 0.5rem 0 0;
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: 1.0625rem;
     line-height: 1.5;
     color: var(--color-muted);
     text-wrap: pretty;
+    max-width: 38rem;
+  }
+
+  .post-row:hover,
+  .post-row:focus-visible {
+    background-color: color-mix(in srgb, var(--color-accent) 5%, transparent);
   }
 
   .post-row:hover .post-row__title,
@@ -130,9 +171,14 @@ const posts = (await getCollection("blog")).sort(
     color: var(--color-accent);
   }
 
+  .post-row:hover .post-row__arrow,
+  .post-row:focus-visible .post-row__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .post-row:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: var(--link-outline);
-    border-radius: var(--radius-link);
   }
 </style>
