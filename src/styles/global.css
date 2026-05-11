@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @theme {
   --font-sans:
@@ -17,6 +16,23 @@
   --color-surface-faded: rgb(255 255 255 / 0.2);
 
   --radius-link: 0.4rem;
+
+  /* Page rhythm — fluid inline/block padding for every page-level region. */
+  --spacing-page-x: clamp(1.25rem, 5vw + 0.5rem, 12rem);
+  --spacing-page-y-sm: clamp(1rem, 2vw + 0.5rem, 3rem);
+  --spacing-page-y-md: clamp(3rem, 6vw + 1rem, 6rem);
+  --spacing-page-y-lg: clamp(4rem, 8vw + 1rem, 8rem);
+
+  /* Content widths — `reading` is article column, `wide` is index/listing. */
+  --container-reading: 44rem;
+  --container-wide: 64rem;
+
+  /* Display type scale — shared across page/post titles and prose headings. */
+  --text-display: clamp(2.5rem, 5.5vw, 4.5rem);
+  --text-dek: clamp(1.125rem, 1.75vw, 1.5rem);
+  --text-section: clamp(1.625rem, 2.6vw, 2.25rem);
+  --text-subsection: clamp(1.25rem, 1.8vw, 1.5rem);
+  --text-pullquote: clamp(1.25rem, 1.9vw, 1.625rem);
 }
 
 @import "./tokens.css";
@@ -30,4 +46,39 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display titles and deks — shared by the /writing index header and
+   individual post headers. Concrete component classes, not utilities. */
+.page-title,
+.post-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-display);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  margin: 0;
+}
+
+.post-title {
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.page-dek,
+.post-dek {
+  margin: 1.25rem 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-dek);
+  line-height: 1.45;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+/* Focus ring — applied at zero specificity via `:where()` so any component
+   can override with a regular selector if it needs a different treatment. */
+:where(a, button, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: var(--link-outline);
 }

@@ -14,17 +14,17 @@ const posts = (await getCollection("writing")).sort(
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
   <div class="min-h-dvh">
     <Header />
-    <main class="px-(--page-inline) pt-(--page-block-lg) pb-24">
-      <header class="mb-12 max-w-[64rem] sm:mb-16">
+    <main class="px-page-x pt-page-y-lg pb-24">
+      <header class="mb-12 max-w-wide sm:mb-16">
         <h1 class="page-title">Writing</h1>
         <p class="page-dek">A running notebook on building software and the craft.</p>
       </header>
 
-      <ul class="post-list max-w-[64rem]">
+      <ul class="post-list max-w-wide">
         {
           posts.map((post) => (
             <li>
-              <a href={`/writing/${post.id}/`} class="post-row">
+              <a href={`/writing/${post.id}/`} class="post-row rounded-link">
                 <FormattedDate date={post.data.pubDate} class="post-row__date" />
                 <div class="post-row__body">
                   <h2 class="post-row__title">
@@ -59,25 +59,6 @@ const posts = (await getCollection("writing")).sort(
 </Layout>
 
 <style>
-  .page-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--color-fg);
-    margin: 0;
-  }
-
-  .page-dek {
-    margin: 1.25rem 0 0;
-    font-family: var(--font-sans);
-    font-size: clamp(1.125rem, 1.75vw, 1.5rem);
-    line-height: 1.45;
-    color: var(--color-muted);
-    text-wrap: pretty;
-  }
-
   .post-list {
     list-style: none;
     padding: 0;
@@ -96,7 +77,6 @@ const posts = (await getCollection("writing")).sort(
     gap: 0.5rem;
     padding: 1.75rem 0.75rem;
     margin-inline: -0.75rem;
-    border-radius: var(--radius-link);
     color: var(--color-fg);
     text-decoration: none;
     transition: background-color 220ms ease;
@@ -145,7 +125,7 @@ const posts = (await getCollection("writing")).sort(
   .post-row__title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(1.625rem, 2.6vw, 2.25rem);
+    font-size: var(--text-section);
     line-height: 1.15;
     letter-spacing: -0.015em;
     color: var(--color-fg);
@@ -191,10 +171,5 @@ const posts = (await getCollection("writing")).sort(
   .post-row:focus-visible .post-row__arrow {
     opacity: 1;
     transform: translateX(0);
-  }
-
-  .post-row:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: var(--link-outline);
   }
 </style>

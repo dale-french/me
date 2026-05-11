@@ -15,7 +15,7 @@ const year = new Date().getFullYear();
 
 <footer
   class:list={[
-    "site-footer depth-layer px-(--page-inline) py-(--page-block-sm) sm:py-(--page-block-md)",
+    "site-footer depth-layer px-page-x py-page-y-sm sm:py-page-y-md",
     flat ? "is-flat" : "-mt-[30vh]",
   ]}
 >
@@ -129,11 +129,6 @@ const year = new Date().getFullYear();
     background-color: rgb(0 0 0 / 0.066);
   }
 
-  .contact-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: var(--link-outline);
-  }
-
   .copy-link {
     display: inline-block;
     padding-inline: var(--link-enlargement);
@@ -160,11 +155,6 @@ const year = new Date().getFullYear();
       visibility: visible;
       transition-delay: 0s, 0s;
     }
-  }
-
-  .copy-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: var(--link-outline);
   }
 
   .copy-link-icon {
@@ -197,11 +187,6 @@ const year = new Date().getFullYear();
 
   .home-link:active {
     transform: scale(0.9);
-  }
-
-  .home-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: var(--link-outline);
   }
 
   .notes {

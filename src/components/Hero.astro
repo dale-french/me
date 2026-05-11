@@ -5,7 +5,7 @@ import { introSegments } from "../data/intro";
 
 <div class="hero-stage depth-layer min-h-dvh">
   <section
-    class="hero px-(--page-inline) pt-(--page-block-md) pb-4 sm:pb-6"
+    class="hero px-page-x pt-page-y-md pb-4 sm:pb-6"
   >
     <a href="/" class="brand" aria-label="Home">
       <Logo class="w-(--logo-size) h-(--logo-size)" bg="black" fg="white" />
@@ -64,11 +64,6 @@ import { introSegments } from "../data/intro";
     width: max-content;
     border-radius: var(--radius-link);
     color: var(--color-fg);
-  }
-
-  .brand:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: var(--link-outline);
   }
 
   .hero-text {
