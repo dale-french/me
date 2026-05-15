@@ -1,7 +1,4 @@
 export default [
-  "",
-  "",
-  "",
   "I’m in Amsterdam.",
   "I live in Amsterdam.",
   "I’m based in the Netherlands.",

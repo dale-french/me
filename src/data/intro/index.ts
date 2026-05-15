@@ -23,9 +23,12 @@ export interface IntroSegment {
 }
 
 /**
- * Sequence order. The first pass types segments in this order; subsequent
- * passes pick segments at random. Segments whose `strings` include empty
- * entries can render as gaps during random rotation — that's intentional.
+ * Candidate strings for each segment of the hero typing sequence. The
+ * controller in `src/scripts/typed-sequence.ts` owns the order in which
+ * segments appear and the shuffle within each segment.
+ *
+ * Strings may include inline `^N` pause markers (sleep N ms while typing)
+ * and raw HTML — tags emit at once, their text content types per grapheme.
  */
 export const introSegments: readonly IntroSegment[] = [
   { id: "hello", strings: hello },

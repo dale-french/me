@@ -29,9 +29,6 @@ importers:
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.0
-      typed.js:
-        specifier: ^3.0.0
-        version: 3.0.0
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.9
@@ -1800,9 +1797,6 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-
-  typed.js@3.0.0:
-    resolution: {integrity: sha512-X4pjf0E7riZBo6j3NS21/7cJJ20osSOtD1OxlRoKfFU3GsdPuSpWlFcIKWf0k8uoKwBBrPuHGx+fKeU6GzRcKg==}
 
   typesafe-path@0.2.2:
     resolution: {integrity: sha512-OJabfkAg1WLZSqJAJ0Z6Sdt3utnbzr/jh+NAHoyWHJe8CMSy79Gm085094M9nvTPy22KzTVn5Zq5mbapCI/hPA==}
@@ -4340,8 +4334,6 @@ snapshots:
 
   tslib@2.8.1:
     optional: true
-
-  typed.js@3.0.0: {}
 
   typesafe-path@0.2.2: {}
 

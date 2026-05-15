@@ -1,7 +1,4 @@
 export default [
-  "",
-  "",
-  "",
   "I lead a team at Vio.",
   "I run the Search team at Vio.com.",
   "I’ve been at Vio for nearly five years.",

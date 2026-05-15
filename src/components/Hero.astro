@@ -15,24 +15,16 @@ const staticIntro =
       <Logo class="w-(--logo-size) h-(--logo-size)" bg="black" fg="white" />
     </a>
 
-    <h1 class="hero-text">
+    <h1 class="hero-text" aria-label={staticIntro}>
       <noscript>{staticIntro}</noscript>
-      <Fragment
-        set:html={introSegments
-          .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
-          .join(" ")}
-      />
+      <span class="hero-text-typing" aria-hidden="true">
+        <Fragment
+          set:html={introSegments
+            .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
+            .join(" ")}
+        />
+      </span>
     </h1>
-
-    {
-      introSegments.map((seg) => (
-        <ul id={`seg-${seg.id}--strings`} class="typed-strings">
-          {seg.strings.map((s) => (
-            <li set:html={s} />
-          ))}
-        </ul>
-      ))
-    }
   </section>
 </div>
 
@@ -48,11 +40,8 @@ const staticIntro =
       const heroText = host.querySelector<HTMLElement>(".hero-text");
       const fallback = host.dataset.staticIntro ?? "";
       if (heroText && fallback) heroText.textContent = fallback;
-      host
-        .querySelectorAll<HTMLElement>('ul[id$="--strings"]')
-        .forEach((el) => el.remove());
     } else {
-      startTypedSequence(host, { pauseThreshold: 0.666 });
+      startTypedSequence(host);
     }
   }
 </script>
@@ -92,14 +81,23 @@ const staticIntro =
     cursor: default;
     pointer-events: none;
     user-select: all;
+    /* Reserve three lines of capacity so the layout doesn't jump as short
+       and long strings cycle through. Most strings fit; very long ones
+       still expand below this floor. */
+    min-height: 3em;
+    /* Intentionally NOT `text-wrap: pretty` — pretty re-balances lines as
+       content grows, which causes the final character of a typing run to
+       trigger a visible re-wrap. */
   }
 
   .hero-text > * {
     pointer-events: auto;
   }
 
-  :global(.typed-strings) {
-    display: none;
+  .hero-text-typing {
+    /* Wrapper exists only to scope `aria-hidden` over the dynamic content.
+       Inline-flow so the segments share the h1's line box. */
+    display: inline;
   }
 
   :global(.typed) {
@@ -119,6 +117,9 @@ const staticIntro =
     opacity: 1;
   }
 
+  /* Emoji-wrapping spans within a typed segment. line-height: 0 keeps the
+     emoji from inflating the baseline; the translate fine-tunes optical
+     alignment with the surrounding glyphs. */
   :global(.typed span) {
     color: initial;
     font-family:
@@ -129,19 +130,28 @@ const staticIntro =
     transform: translate(-0.05em, 0.05em);
   }
 
+  /* Caret. A sized pseudo-element rather than the `|` glyph, so its width
+     and height aren't at the mercy of whichever font is serving the
+     heading. The negative right margin makes the caret render *over* the
+     trailing inter-segment space rather than push subsequent content
+     rightward — so when the caret leaves a segment (active moves), nothing
+     shifts. */
   :global(.typed--active::after) {
-    content: "|";
-    color: var(--color-accent);
-    margin-left: 0.02em;
-    transform: translateY(-0.04em);
+    content: "";
     display: inline-block;
+    width: 0.08em;
+    height: 0.85em;
+    margin-left: 0.06em;
+    margin-right: -0.14em;
+    vertical-align: -0.05em;
+    background-color: var(--color-accent);
   }
 
   :global(.typed--active:not(.typed--typing)::after) {
-    animation: caret-blink 750ms linear infinite;
+    animation: hero-caret-blink 750ms linear infinite;
   }
 
-  @keyframes caret-blink {
+  @keyframes hero-caret-blink {
     0%,
     100% {
       opacity: 1;
