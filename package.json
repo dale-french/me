@@ -6,6 +6,9 @@
     "node": ">=22.12.0"
   },
   "packageManager": "pnpm@10.9.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "workerd"]
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -26,6 +29,7 @@
     "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.107.0"
   }
 }

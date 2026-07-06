@@ -7,7 +7,7 @@ export default [
   "Thanks.",
   "Tot ziens.",
   "Tot snel.",
+  "Totsiens.",
   "Thanks for stopping by.",
-  "Looking forward to it.",
-  "I hope to hear from you.",
+  "Okay,^250 back to work.",
 ] as const satisfies readonly string[];
