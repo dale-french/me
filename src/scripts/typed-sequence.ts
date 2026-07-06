@@ -132,7 +132,8 @@ function tokenize(raw: string): Token[] {
 
   const flushTextRun = () => {
     if (!textRun) return;
-    for (const g of graphemesOf(textRun)) tokens.push({ kind: "char", text: g });
+    for (const g of graphemesOf(textRun))
+      tokens.push({ kind: "char", text: g });
     textRun = "";
   };
 
@@ -195,9 +196,7 @@ function humanize(base: number): number {
 
 /* ---------------------------- controller ------------------------------- */
 
-export function startTypedSequence(
-  host: HTMLElement,
-): TypedSequenceController {
+export function startTypedSequence(host: HTMLElement): TypedSequenceController {
   const segments = new Map<SegmentId, Segment>();
   for (const seg of introSegments) {
     const el = host.querySelector<HTMLElement>(`#seg-${seg.id}`);
@@ -312,10 +311,7 @@ export function startTypedSequence(
     const tokens = tokenize(seg.lastTyped).filter((t) => t.kind !== "pause");
     while (tokens.length > 0) {
       cancelOnly();
-      while (
-        tokens.length > 0 &&
-        tokens[tokens.length - 1].kind === "tag"
-      ) {
+      while (tokens.length > 0 && tokens[tokens.length - 1].kind === "tag") {
         tokens.pop();
       }
       if (tokens.length === 0) break;

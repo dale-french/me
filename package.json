@@ -5,11 +5,15 @@
   "engines": {
     "node": ">=22.12.0"
   },
+  "packageManager": "pnpm@10.9.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
@@ -19,6 +23,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "prettier": "^3.9.4",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^6.0.3"
   }
 }

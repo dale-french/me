@@ -8,14 +8,7 @@ import next from "./next";
 import outro from "./outro";
 
 export type SegmentId =
-  | "hello"
-  | "name"
-  | "job"
-  | "fact"
-  | "live"
-  | "previous"
-  | "next"
-  | "outro";
+  "hello" | "name" | "job" | "fact" | "live" | "previous" | "next" | "outro";
 
 export interface IntroSegment {
   readonly id: SegmentId;

@@ -1,8 +1,8 @@
 {
   "recommendations": [
     "astro-build.astro-vscode",
-    "unifiedjs.vscode-mdx",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode"
   ],
   "unwantedRecommendations": []
 }
