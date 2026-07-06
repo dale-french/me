@@ -5,7 +5,7 @@ export default [
   "I lead a frontend team.",
   "I manage engineers and still ship code.",
   "I center divs at scale.",
-  "I build products and features.^500 Good ones.",
+  "I build products.^500 Good ones.",
   "I was a designer before I was an engineer.",
   "I lead a product team at a global travel company.",
   "I spend a suspicious amount of time with AI agents.",

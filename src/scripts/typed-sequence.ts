@@ -59,7 +59,6 @@ const INITIAL_ORDER: readonly SegmentId[] = [
   "name",
   "job",
   "live",
-  "previous",
   "next",
   "outro",
 ];
@@ -72,7 +71,6 @@ const ROTATION_POOL: readonly SegmentId[] = [
   "job",
   "fact",
   "live",
-  "previous",
   "next",
 ];
 

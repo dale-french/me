@@ -27,7 +27,7 @@ export default [
   "I miss the indie web.",
   "I believe in the open web.",
   "I’m skeptical of anything calling itself “the future.”",
-  "I’d rather ship one good thing than three okay things.",
+  "I’d rather ship one good thing than three okay ones.",
   "I find a clean diff satisfying.",
   "I’m a new dad.",
 ] as const satisfies readonly string[];

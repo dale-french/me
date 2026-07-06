@@ -1,9 +1,8 @@
 export default [
   "I’m Dale.",
-  "I’m Dale French.",
-  "Dale speaking^250, well, ^250, typing.",
   "Dale here.",
   "This is Dale.",
   "My name is Dale.",
   "I’m Dale French.",
+  "Dale speaking.^500 Well,^375 typing.",
 ] as const satisfies readonly string[];
