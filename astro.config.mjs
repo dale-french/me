@@ -31,20 +31,6 @@ export default defineConfig({
             style: "italic",
             display: "swap",
           },
-          {
-            src: ["./src/assets/fonts/neue-haas-grotesk-text--75--bold.woff2"],
-            weight: 700,
-            style: "normal",
-            display: "swap",
-          },
-          {
-            src: [
-              "./src/assets/fonts/neue-haas-grotesk-text--76--bold-italic.woff2",
-            ],
-            weight: 700,
-            style: "italic",
-            display: "swap",
-          },
         ],
       },
     },
@@ -69,14 +55,6 @@ export default defineConfig({
             ],
             weight: 500,
             style: "italic",
-            display: "swap",
-          },
-          {
-            src: [
-              "./src/assets/fonts/neue-haas-grotesk-display--75--bold.woff2",
-            ],
-            weight: 700,
-            style: "normal",
             display: "swap",
           },
         ],

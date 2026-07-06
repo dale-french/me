@@ -29,7 +29,10 @@ const staticIntro =
 </div>
 
 <script>
-  import { startTypedSequence } from "../scripts/typed-sequence";
+  import {
+    isTypedSequenceSupported,
+    startTypedSequence,
+  } from "../scripts/typed-sequence";
 
   const FOOTER_PAUSE_RATIO = 0.5;
 
@@ -38,7 +41,7 @@ const staticIntro =
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduced) {
+    if (reduced || !isTypedSequenceSupported()) {
       const heroText = host.querySelector<HTMLElement>(".hero-text");
       const fallback = host.dataset.staticIntro ?? "";
       if (heroText && fallback) heroText.textContent = fallback;
@@ -55,8 +58,12 @@ const staticIntro =
             const occluded = entry.intersectionRatio >= FOOTER_PAUSE_RATIO;
             if (occluded && !pausedByFooter) {
               pausedByFooter = true;
-              host.classList.add("typed--background");
-              controller.pause();
+              // Dim only once the sequence has actually parked (the pause
+              // takes effect at the next segment boundary), so the fade
+              // never falls over a sentence still in motion.
+              controller.pause().then(() => {
+                if (pausedByFooter) host.classList.add("typed--background");
+              });
             } else if (!occluded && pausedByFooter) {
               pausedByFooter = false;
               host.classList.remove("typed--background");

@@ -1,10 +1,11 @@
 const COPIED_LABEL = "Copied";
+const FAILED_LABEL = "Couldn’t copy";
 const FEEDBACK_DURATION_MS = 1500;
 
 /**
  * Wires a click handler that copies `data-copy` (or text content) to the
- * clipboard, then briefly swaps the visible label to "Copied" and announces
- * the result via a shared aria-live region.
+ * clipboard, then briefly swaps the visible label to the outcome and
+ * announces it via a shared aria-live region.
  */
 export function mountClipboardCopy(button: HTMLButtonElement): void {
   const text = button.dataset.copy ?? button.textContent?.trim() ?? "";
@@ -18,15 +19,15 @@ export function mountClipboardCopy(button: HTMLButtonElement): void {
   button.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(text);
-      flash(COPIED_LABEL, `Copied ${text}`);
+      flash(COPIED_LABEL, `Copied ${text}`, true);
     } catch {
-      announce(`Couldn't copy — select and copy manually`);
+      flash(FAILED_LABEL, "Couldn’t copy — select and copy manually", false);
     }
   });
 
-  function flash(visible: string, announcement: string) {
+  function flash(visible: string, announcement: string, copied: boolean) {
     labelEl.textContent = visible;
-    button.classList.add("is-copied");
+    button.classList.toggle("is-copied", copied);
     announce(announcement);
     if (resetTimer !== null) window.clearTimeout(resetTimer);
     resetTimer = window.setTimeout(() => {

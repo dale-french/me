@@ -22,9 +22,9 @@ export interface IntroSegment {
  * Strings may include inline `^N` pause markers (sleep N ms while typing)
  * and raw HTML — tags emit at once, their text content types per grapheme.
  *
- * Emoji-only strings in `hello.ts` start with an invisible zero-width space
- * (U+200B) so the segment still has text content and holds the line's text
- * baseline. It's easy to delete by accident — leave it in place.
+ * Emoji-only strings (no bare text outside their tags) need no special
+ * handling here — the controller prefixes them with an invisible zero-width
+ * space so the segment holds the line's text baseline.
  */
 export const introSegments: readonly IntroSegment[] = [
   { id: "hello", strings: hello },

@@ -96,7 +96,12 @@ interface Segment {
 }
 
 export interface TypedSequenceController {
-  pause(): void;
+  /**
+   * Request a pause. The in-flight sentence completes first; the returned
+   * promise resolves once the run loop has actually parked (or on
+   * resume/destroy, so callers can re-check state and bail).
+   */
+  pause(): Promise<void>;
   resume(): void;
   destroy(): void;
 }
@@ -105,10 +110,26 @@ class CancelledError extends Error {}
 
 /* ----------------------------- utilities ------------------------------- */
 
-const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
+// Guarded so importing this module never throws on browsers without
+// Intl.Segmenter (Safari < 16.4, Firefox < 125) — callers check
+// isTypedSequenceSupported() and fall back to static text.
+const segmenter =
+  "Segmenter" in Intl
+    ? new Intl.Segmenter("en", { granularity: "grapheme" })
+    : null;
+
+export function isTypedSequenceSupported(): boolean {
+  return segmenter !== null;
+}
 
 function* graphemesOf(s: string): Iterable<string> {
-  for (const { segment } of segmenter.segment(s)) yield segment;
+  if (segmenter) {
+    for (const { segment } of segmenter.segment(s)) yield segment;
+  } else {
+    // Only reachable if a caller skips the support check. Code points split
+    // some emoji sequences, but everything still types.
+    yield* Array.from(s);
+  }
 }
 
 function shuffledIndices(n: number): number[] {
@@ -166,6 +187,21 @@ function strip(s: string): string {
   return s.replace(/<[^>]+>/g, "").replace(/\^\d+/g, "");
 }
 
+/**
+ * Text inside an element can't hold the line's baseline — the emoji <span>s
+ * render at line-height: 0 (see Hero.astro). Strings with no bare text
+ * outside their tags get an invisible zero-width space prefix so the
+ * segment always contributes real baseline text.
+ */
+function withBaselineHolder(raw: string): string {
+  let depth = 0;
+  for (const tok of tokenize(raw)) {
+    if (tok.kind === "tag") depth += tok.text.startsWith("</") ? -1 : 1;
+    else if (tok.kind === "char" && depth === 0) return raw;
+  }
+  return `\u{200B}${raw}`;
+}
+
 function lingerFor(lastTyped: string): number {
   const stripped = strip(lastTyped);
   const trailing = stripped.trim().slice(-1);
@@ -211,9 +247,12 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
 
   let cancelled = false;
   let paused = false;
+  // True once the run loop has blocked at a checkpoint while paused.
+  let parked = false;
   let activeTimer: number | null = null;
   let activeSleepResolve: (() => void) | null = null;
   const pauseWaiters: (() => void)[] = [];
+  const parkedWaiters: (() => void)[] = [];
 
   function sleep(ms: number): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -238,7 +277,11 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
    * sentence on screen.
    */
   async function checkpoint(): Promise<void> {
-    if (paused) await waitWhilePaused();
+    if (paused) {
+      parked = true;
+      for (const resolve of parkedWaiters.splice(0)) resolve();
+      await waitWhilePaused();
+    }
     if (cancelled) throw new CancelledError();
   }
 
@@ -334,7 +377,7 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
       await sleep(POST_BACKSPACE_SETTLE);
       cancelOnly();
     }
-    const str = peekString(seg);
+    const str = withBaselineHolder(peekString(seg));
     let html = "";
     for (const tok of tokenize(str)) {
       cancelOnly();
@@ -424,16 +467,19 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
     throw err;
   });
 
-  function pause() {
-    if (paused) return;
+  function pause(): Promise<void> {
     paused = true;
+    if (parked) return Promise.resolve();
+    return new Promise<void>((resolve) => parkedWaiters.push(resolve));
   }
 
   function resume() {
     if (!paused) return;
     paused = false;
-    const waiters = pauseWaiters.splice(0);
-    for (const resolve of waiters) resolve();
+    parked = false;
+    for (const resolve of pauseWaiters.splice(0)) resolve();
+    // Settle pause() callers still waiting on a park that will never come.
+    for (const resolve of parkedWaiters.splice(0)) resolve();
   }
 
   return {
@@ -449,8 +495,8 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
       // check and exits via CancelledError instead of hanging forever.
       activeSleepResolve?.();
       activeSleepResolve = null;
-      const waiters = pauseWaiters.splice(0);
-      for (const resolve of waiters) resolve();
+      for (const resolve of pauseWaiters.splice(0)) resolve();
+      for (const resolve of parkedWaiters.splice(0)) resolve();
     },
   };
 }
