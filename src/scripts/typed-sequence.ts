@@ -79,7 +79,6 @@ const ROTATION_POOL: readonly SegmentId[] = [
 /* -------------------------------- DOM ---------------------------------- */
 
 const ACTIVE = "typed--active";
-const BACKGROUND = "typed--background";
 const PAUSED = "typed--paused";
 const TYPING = "typed--typing";
 
@@ -199,10 +198,7 @@ function humanize(base: number): number {
 
 export function startTypedSequence(
   host: HTMLElement,
-  options: { pauseThreshold?: number } = {},
 ): TypedSequenceController {
-  const pauseThreshold = options.pauseThreshold ?? 0;
-
   const segments = new Map<SegmentId, Segment>();
   for (const seg of introSegments) {
     const el = host.querySelector<HTMLElement>(`#seg-${seg.id}`);
@@ -219,7 +215,6 @@ export function startTypedSequence(
 
   let cancelled = false;
   let paused = false;
-  let pausedByObserver = false;
   let activeTimer: number | null = null;
   const pauseWaiters: (() => void)[] = [];
 
@@ -239,10 +234,21 @@ export function startTypedSequence(
 
   /**
    * Yield point between awaits. Resolves immediately if running; blocks
-   * while paused; throws CancelledError if destroyed.
+   * while paused; throws CancelledError if destroyed. Use only at segment
+   * boundaries (handoff, run loop) so a pause never strands a half-typed
+   * sentence on screen.
    */
   async function checkpoint(): Promise<void> {
     if (paused) await waitWhilePaused();
+    if (cancelled) throw new CancelledError();
+  }
+
+  /**
+   * Cancel-only yield point. Ignores pause so the in-flight sentence
+   * (typing or backspacing) completes before pause takes effect at the
+   * next handoff.
+   */
+  function cancelOnly(): void {
     if (cancelled) throw new CancelledError();
   }
 
@@ -296,7 +302,7 @@ export function startTypedSequence(
   async function backspaceCurrent(seg: Segment): Promise<void> {
     const tokens = tokenize(seg.lastTyped).filter((t) => t.kind !== "pause");
     while (tokens.length > 0) {
-      await checkpoint();
+      cancelOnly();
       while (
         tokens.length > 0 &&
         tokens[tokens.length - 1].kind === "tag"
@@ -323,12 +329,12 @@ export function startTypedSequence(
     if (seg.lastTyped) {
       await backspaceCurrent(seg);
       await sleep(POST_BACKSPACE_SETTLE);
-      await checkpoint();
+      cancelOnly();
     }
     const str = peekString(seg);
     let html = "";
     for (const tok of tokenize(str)) {
-      await checkpoint();
+      cancelOnly();
       switch (tok.kind) {
         case "tag":
           html += tok.text;
@@ -339,7 +345,7 @@ export function startTypedSequence(
           break;
         case "char":
           await sleep(humanize(TYPE_SPEED));
-          await checkpoint();
+          cancelOnly();
           html += tok.text;
           seg.el.innerHTML = html;
           break;
@@ -359,6 +365,11 @@ export function startTypedSequence(
    * handoffs widen both pauses for a more deliberate swap rhythm.
    */
   async function handoff(from: Segment, next: Segment): Promise<void> {
+    // Pause point: the just-finished sentence is fully typed and visible.
+    // If a pause is pending (e.g. footer scrolled into view), block here
+    // before starting the linger so the dim doesn't fall over a sentence
+    // in motion.
+    await checkpoint();
     const revisit = next.lastTyped !== "";
     const lingerBonus = revisit ? REVISIT_LINGER_BONUS : 0;
     const thinkBonus = revisit ? REVISIT_THINK_BONUS : 0;
@@ -424,26 +435,6 @@ export function startTypedSequence(
     for (const resolve of waiters) resolve();
   }
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        host.classList.remove(BACKGROUND);
-        if (pausedByObserver) {
-          pausedByObserver = false;
-          resume();
-        }
-      } else {
-        host.classList.add(BACKGROUND);
-        if (!paused) {
-          pausedByObserver = true;
-          pause();
-        }
-      }
-    },
-    { threshold: pauseThreshold },
-  );
-  observer.observe(host);
-
   return {
     pause,
     resume,
@@ -455,7 +446,6 @@ export function startTypedSequence(
       }
       const waiters = pauseWaiters.splice(0);
       for (const resolve of waiters) resolve();
-      observer.disconnect();
     },
   };
 }

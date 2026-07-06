@@ -31,6 +31,8 @@ const staticIntro =
 <script>
   import { startTypedSequence } from "../scripts/typed-sequence";
 
+  const FOOTER_PAUSE_RATIO = 0.5;
+
   const host = document.querySelector<HTMLElement>(".hero");
   if (host) {
     const reduced = window.matchMedia(
@@ -41,7 +43,27 @@ const staticIntro =
       const fallback = host.dataset.staticIntro ?? "";
       if (heroText && fallback) heroText.textContent = fallback;
     } else {
-      startTypedSequence(host);
+      const controller = startTypedSequence(host);
+      const footer = document.querySelector<HTMLElement>(".site-footer");
+      if (footer) {
+        let pausedByFooter = false;
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            const occluded = entry.intersectionRatio >= FOOTER_PAUSE_RATIO;
+            if (occluded && !pausedByFooter) {
+              pausedByFooter = true;
+              host.classList.add("typed--background");
+              controller.pause();
+            } else if (!occluded && pausedByFooter) {
+              pausedByFooter = false;
+              host.classList.remove("typed--background");
+              controller.resume();
+            }
+          },
+          { threshold: [0, FOOTER_PAUSE_RATIO, 1] },
+        );
+        observer.observe(footer);
+      }
     }
   }
 </script>
@@ -56,11 +78,6 @@ const staticIntro =
     display: flex;
     flex-direction: column;
     row-gap: var(--hero-gap-y);
-    transition: opacity 1s ease-out;
-  }
-
-  .hero.typed--background {
-    opacity: 0.333;
   }
 
   .brand {
@@ -115,6 +132,17 @@ const staticIntro =
 
   :global(.typed--active) {
     opacity: 1;
+  }
+
+  /* Paused state: every segment fades to the same uniform light grey,
+     including the active one. Lighter than the resting dim so the whole
+     line reads as "at rest" rather than "this part is more important." */
+  .hero:global(.typed--background) :global(.typed),
+  .hero:global(.typed--background) :global(.typed--active) {
+    opacity: 0.12;
+    transition:
+      color 500ms ease-out,
+      opacity 500ms ease-out;
   }
 
   /* Emoji-wrapping spans within a typed segment. line-height: 0 keeps the

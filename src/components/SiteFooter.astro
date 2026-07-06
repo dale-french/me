@@ -85,12 +85,33 @@ const year = new Date().getFullYear();
     flex-direction: column;
     row-gap: clamp(6rem, 25vh, 18rem);
     min-height: 38.2vh;
-    background-color: var(--color-surface-faded);
-    backdrop-filter: blur(0.42rem);
-    -webkit-backdrop-filter: blur(0.42rem);
     font-family: var(--font-display);
     font-weight: 500;
     color: var(--color-fg);
+  }
+
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-surface-faded);
+    backdrop-filter: blur(0.42rem);
+    -webkit-backdrop-filter: blur(0.42rem);
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      black clamp(2rem, 8vh, 6rem)
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      black clamp(2rem, 8vh, 6rem)
+    );
+    pointer-events: none;
+  }
+
+  .site-footer > :not(.sr-only) {
+    position: relative;
   }
 
   .site-footer.is-flat {
