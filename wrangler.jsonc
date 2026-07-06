@@ -3,6 +3,6 @@
   "name": "dalefrench-dev",
   "compatibility_date": "2026-07-06",
   "assets": {
-    "directory": "./dist"
-  }
+    "directory": "./dist",
+  },
 }
