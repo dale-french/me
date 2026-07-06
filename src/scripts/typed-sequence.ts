@@ -79,7 +79,6 @@ const ROTATION_POOL: readonly SegmentId[] = [
 /* -------------------------------- DOM ---------------------------------- */
 
 const ACTIVE = "typed--active";
-const PAUSED = "typed--paused";
 const TYPING = "typed--typing";
 
 /* ------------------------------- types --------------------------------- */
@@ -216,12 +215,15 @@ export function startTypedSequence(
   let cancelled = false;
   let paused = false;
   let activeTimer: number | null = null;
+  let activeSleepResolve: (() => void) | null = null;
   const pauseWaiters: (() => void)[] = [];
 
   function sleep(ms: number): Promise<void> {
     return new Promise<void>((resolve) => {
+      activeSleepResolve = resolve;
       activeTimer = window.setTimeout(() => {
         activeTimer = null;
+        activeSleepResolve = null;
         resolve();
       }, ms);
     });
@@ -277,8 +279,15 @@ export function startTypedSequence(
   function advanceCursor(seg: Segment): void {
     seg.pos += 1;
     if (seg.pos >= seg.sequence.length) {
+      const lastPlayed = seg.sequence[seg.sequence.length - 1];
       seg.pos = 0;
       seg.sequence = shuffledIndices(seg.strings.length);
+      // Don't let the fresh shuffle open with the string that just played —
+      // erasing a sentence and retyping it verbatim reads as a glitch.
+      if (seg.sequence.length > 1 && seg.sequence[0] === lastPlayed) {
+        const j = 1 + Math.floor(Math.random() * (seg.sequence.length - 1));
+        [seg.sequence[0], seg.sequence[j]] = [seg.sequence[j], seg.sequence[0]];
+      }
     }
   }
 
@@ -424,13 +433,11 @@ export function startTypedSequence(
   function pause() {
     if (paused) return;
     paused = true;
-    host.classList.add(PAUSED);
   }
 
   function resume() {
     if (!paused) return;
     paused = false;
-    host.classList.remove(PAUSED);
     const waiters = pauseWaiters.splice(0);
     for (const resolve of waiters) resolve();
   }
@@ -444,6 +451,10 @@ export function startTypedSequence(
         clearTimeout(activeTimer);
         activeTimer = null;
       }
+      // Settle the in-flight sleep so the run loop reaches its next cancel
+      // check and exits via CancelledError instead of hanging forever.
+      activeSleepResolve?.();
+      activeSleepResolve = null;
       const waiters = pauseWaiters.splice(0);
       for (const resolve of waiters) resolve();
     },

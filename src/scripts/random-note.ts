@@ -24,8 +24,9 @@ export function mountRandomNote(
   let current = pickOther(null);
   current.classList.add(VISIBLE);
 
-  const observer = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting) return;
+  const observer = new IntersectionObserver((entries) => {
+    // Entries batch oldest → newest; only the last reflects the current state.
+    if (entries[entries.length - 1].isIntersecting) return;
     const next = pickOther(current);
     current.classList.remove(VISIBLE);
     next.classList.add(VISIBLE);

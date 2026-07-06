@@ -48,7 +48,10 @@ const staticIntro =
       if (footer) {
         let pausedByFooter = false;
         const observer = new IntersectionObserver(
-          ([entry]) => {
+          (entries) => {
+            // Entries batch oldest → newest; only the last reflects the
+            // current state.
+            const entry = entries[entries.length - 1];
             const occluded = entry.intersectionRatio >= FOOTER_PAUSE_RATIO;
             if (occluded && !pausedByFooter) {
               pausedByFooter = true;

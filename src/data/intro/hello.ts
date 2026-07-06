@@ -1,4 +1,7 @@
 export default [
+  // The emoji-only strings open with an invisible zero-width space (U+200B)
+  // so the segment has real text content and keeps the line's text baseline.
+  // It looks like nothing in an editor — don't "clean" it away.
   "​<span>👋</span>",
   "​<span>✋</span>",
   "​<span>🇳🇱</span>",

@@ -24,8 +24,4 @@ export const contactLinks: readonly ContactLink[] = [
     href: "https://www.linkedin.com/in/dale-french-dev/",
     external: true,
   },
-  {
-    label: "Writing",
-    href: "/writing",
-  },
 ];
