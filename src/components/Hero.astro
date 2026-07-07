@@ -28,19 +28,8 @@ import { introSegments, staticIntro } from "../data/intro";
     startTypedSequence,
   } from "../scripts/typed-sequence";
 
-  // Pause once the footer covers this fraction of the viewport. Footer
-  // visibility would misfire here: on tall screens the footer is shorter
-  // than the viewport, so its own ratio reads "mostly visible" at scroll 0
-  // and would park the sequence before it ever types.
-  const FOOTER_PAUSE_COVERAGE = 0.5;
-  // On tall viewports the footer's capped height can never cover half the
-  // viewport, so also pause once the footer is fully in view — which only
-  // happens at max scroll (at scroll 0 its bottom still hangs below the
-  // viewport). Just under 1 to absorb subpixel rounding.
-  const FOOTER_PAUSE_FULL_RATIO = 0.99;
-  // Dense thresholds so the callback re-fires often enough to track the
-  // viewport-coverage boundary, which no single footer ratio maps to.
-  const COVERAGE_THRESHOLDS = Array.from({ length: 21 }, (_, i) => i / 20);
+  const PAUSE_COVERAGE = 0.25;
+  const RESUME_COVERAGE = 0.19;
 
   const host = document.querySelector<HTMLElement>(".hero");
   if (host) {
@@ -57,33 +46,40 @@ import { introSegments, staticIntro } from "../data/intro";
       const footer = document.querySelector<HTMLElement>(".site-footer");
       if (footer) {
         let pausedByFooter = false;
-        const observer = new IntersectionObserver(
-          (entries) => {
-            // Entries batch oldest → newest; only the last reflects the
-            // current state.
-            const entry = entries[entries.length - 1];
-            const rootHeight = entry.rootBounds?.height ?? window.innerHeight;
-            const coverage = entry.intersectionRect.height / rootHeight;
-            const occluded =
-              coverage >= FOOTER_PAUSE_COVERAGE ||
-              entry.intersectionRatio >= FOOTER_PAUSE_FULL_RATIO;
-            if (occluded && !pausedByFooter) {
-              pausedByFooter = true;
-              // Dim only once the sequence has actually parked (the pause
-              // takes effect at the next segment boundary), so the fade
-              // never falls over a sentence still in motion.
-              controller.pause().then(() => {
-                if (pausedByFooter) host.classList.add("typed--background");
-              });
-            } else if (!occluded && pausedByFooter) {
-              pausedByFooter = false;
-              host.classList.remove("typed--background");
-              controller.resume();
-            }
-          },
-          { threshold: COVERAGE_THRESHOLDS },
-        );
-        observer.observe(footer);
+
+        function evaluate() {
+          const top = footer!.getBoundingClientRect().top;
+          const coverage = 1 - Math.max(top, 0) / window.innerHeight;
+          if (coverage >= PAUSE_COVERAGE && !pausedByFooter) {
+            pausedByFooter = true;
+            // Dim only once the sequence has actually parked (the pause takes
+            // effect at the next segment boundary), so the fade never falls
+            // over a sentence still in motion.
+            controller.pause().then(() => {
+              if (pausedByFooter) host!.classList.add("typed--background");
+            });
+          } else if (coverage < RESUME_COVERAGE && pausedByFooter) {
+            pausedByFooter = false;
+            host!.classList.remove("typed--background");
+            controller.resume();
+          }
+        }
+
+        // Body is the parallax scroll container, so the scroll events fire
+        // there, not on window. Coalesce bursts to one read per frame.
+        let ticking = false;
+        function schedule() {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            evaluate();
+          });
+        }
+
+        document.body.addEventListener("scroll", schedule, { passive: true });
+        window.addEventListener("resize", schedule, { passive: true });
+        evaluate();
       }
     }
   }

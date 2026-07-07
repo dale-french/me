@@ -56,9 +56,9 @@ body {
   font-weight: 500;
   border-radius: var(--radius-link);
   z-index: 100;
-  transform: translateY(-150%);
+  clip-path: inset(50%);
 }
 
 .skip-link:focus-visible {
-  transform: translateY(0);
+  clip-path: none;
 }
