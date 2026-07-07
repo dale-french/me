@@ -12,7 +12,8 @@ export const contactLinks: readonly ContactLink[] = [
     label: "Email",
     href: "mailto:hello@dalefrench.dev",
     copy: "hello@dalefrench.dev",
-    external: true,
+    // Not external: target="_blank" on a mailto leaves a dead about:blank
+    // tab behind while the OS hands off to the mail client.
   },
   {
     label: "GitHub",

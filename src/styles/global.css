@@ -17,7 +17,7 @@
 
   --radius-link: 0.4rem;
 
-  /* Page rhythm — fluid inline/block padding for every page-level region. */
+  /* Page rhythm: fluid inline/block padding for every page-level region. */
   --spacing-page-x: clamp(1.25rem, 5vw + 0.5rem, 12rem);
   --spacing-page-y-sm: clamp(1rem, 2vw + 0.5rem, 3rem);
   --spacing-page-y-md: clamp(3rem, 6vw + 1rem, 6rem);
@@ -35,14 +35,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus ring — applied at zero specificity via `:where()` so any component
-   can override with a regular selector if it needs a different treatment. */
+/* Focus ring at zero specificity via `:where()` so any component can
+   override it with a regular selector. */
 :where(a, button, [role="button"], [tabindex]):focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: var(--link-outline);
 }
 
-/* Skip link — visually hidden until focused so keyboard users can jump past
+/* Skip link: visually hidden until focused so keyboard users can jump past
    the header straight to the page's main landmark. */
 .skip-link {
   position: absolute;

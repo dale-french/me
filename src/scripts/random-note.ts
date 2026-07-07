@@ -2,8 +2,8 @@ const VISIBLE = "is-visible";
 
 /**
  * Picks one note from `list` to show initially, then swaps to a different
- * random note each time `bookend` leaves the viewport. The visibility is
- * driven by the `is-visible` class — the host owns the show/hide CSS.
+ * random note each time `bookend` leaves the viewport. Visibility is
+ * driven by the `is-visible` class; the host owns the show/hide CSS.
  */
 export function mountRandomNote(
   bookend: HTMLElement,

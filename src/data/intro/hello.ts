@@ -1,9 +1,9 @@
 export default [
   "<span>👋</span>",
   "<span>✋</span>",
-  "<span>🇳🇱</span>",
   "Hi.",
   "Hey.",
+  "Hey hey!",
   "Hoi.",
   "Hallo.",
   "Hello.",
@@ -15,5 +15,5 @@ export default [
   "Hi,^375 again.",
   "Hello there.",
   "Nice to meet you.",
-  "You found me online.",
+  "Hey! Seems you found me online.",
 ] as const satisfies readonly string[];

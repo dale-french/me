@@ -67,6 +67,11 @@ const year = new Date().getFullYear();
   const bookend = document.querySelector<HTMLElement>(".bookend");
   const notes = document.querySelector<HTMLUListElement>("[data-notes]");
   if (bookend && notes) mountRandomNote(bookend, notes);
+
+  // The server-rendered year is baked in at build time; correct it client-side
+  // so a stale deploy doesn't show last year forever.
+  const yearEl = document.querySelector<HTMLElement>(".year");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 </script>
 
 <style>
@@ -117,7 +122,7 @@ const year = new Date().getFullYear();
     position: relative;
   }
 
-  /* Extra breathing room below the first contact (Email). */
+  /* Email is the primary contact; set it apart from the social links. */
   .contact-list li:first-child {
     margin-bottom: 0.5em;
   }

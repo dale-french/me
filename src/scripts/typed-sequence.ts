@@ -1,14 +1,9 @@
 /*
- * Hero typing sequence.
- *
- * Drives the animated <h1> in the Hero. Each segment (hello, name, job, …)
- * is an inline <span>; the controller decides who's "active" and types the
- * next shuffled string into that segment one grapheme at a time. After a
- * segment finishes, the baton lingers, fades to the next segment, thinks,
- * and types again.
- *
- * The string source supports inline `^N` pause markers (sleep N ms before
- * resuming) and raw HTML (tags emit at once; their text content types).
+ * Hero typing sequence. Each segment (hello, name, job, ...) is an inline
+ * <span>; the controller types the next shuffled string into the active
+ * segment one grapheme at a time, then lingers, moves the baton, thinks,
+ * and types again. Strings support inline `^N` pause markers (sleep N ms)
+ * and raw HTML (tags emit at once; their text content types).
  */
 
 import { introSegments, type SegmentId } from "../data/intro";
@@ -18,8 +13,7 @@ import { introSegments, type SegmentId } from "../data/intro";
 const TYPE_SPEED = 28;
 const BACK_SPEED = 22;
 const INITIAL_DELAY = 3000;
-// Beat between erasing prior content and typing the new string. A short
-// "fresh canvas" moment so the swap doesn't read as a hard cut.
+// Beat between erase and retype so the swap doesn't read as a hard cut.
 const POST_BACKSPACE_SETTLE = 500;
 
 const LINGER_BASE = 450;
@@ -35,11 +29,9 @@ const PRE_THINK_BONUS_AFTER: Partial<Record<SegmentId, number>> = {
   outro: 350,
 };
 
-// Rotation handoffs (where `next` has prior content about to be erased) get
-// extra breathing room around the swap. The user is comparing what's there
-// to what's about to arrive — they need more time on the just-finished
-// string before the baton moves, and more time on the old content before
-// it's erased. First-pass handoffs (next is fresh) skip both bonuses.
+// Handoffs that erase prior content get extra breathing room: more time
+// on the just-finished string before the baton moves, and more time on
+// the old content before the erase. First-pass handoffs skip both.
 const REVISIT_LINGER_BONUS = 750;
 const REVISIT_THINK_BONUS = 350;
 
@@ -53,7 +45,7 @@ const PUNCT_BONUS: Record<string, number> = {
 
 /* ------------------------------ sequence ------------------------------- */
 
-// First pass — a deliberate intro story, ending with the close.
+// First pass: a deliberate intro story, ending with the close.
 const INITIAL_ORDER: readonly SegmentId[] = [
   "hello",
   "name",
@@ -111,7 +103,7 @@ class CancelledError extends Error {}
 /* ----------------------------- utilities ------------------------------- */
 
 // Guarded so importing this module never throws on browsers without
-// Intl.Segmenter (Safari < 16.4, Firefox < 125) — callers check
+// Intl.Segmenter (Safari < 16.4, Firefox < 125); callers check
 // isTypedSequenceSupported() and fall back to static text.
 const segmenter =
   "Segmenter" in Intl
@@ -188,10 +180,10 @@ function strip(s: string): string {
 }
 
 /**
- * Text inside an element can't hold the line's baseline — the emoji <span>s
- * render at line-height: 0 (see Hero.astro). Strings with no bare text
- * outside their tags get an invisible zero-width space prefix so the
- * segment always contributes real baseline text.
+ * The emoji <span>s render at line-height: 0 (see Hero.astro), so they
+ * can't hold the line's baseline. Strings with no bare text outside their
+ * tags get a zero-width space prefix so the segment still contributes
+ * baseline text.
  */
 function withBaselineHolder(raw: string): string {
   let depth = 0;
@@ -322,7 +314,7 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
       const lastPlayed = seg.sequence[seg.sequence.length - 1];
       seg.pos = 0;
       seg.sequence = shuffledIndices(seg.strings.length);
-      // Don't let the fresh shuffle open with the string that just played —
+      // Don't let the fresh shuffle open with the string that just played;
       // erasing a sentence and retyping it verbatim reads as a glitch.
       if (seg.sequence.length > 1 && seg.sequence[0] === lastPlayed) {
         const j = 1 + Math.floor(Math.random() * (seg.sequence.length - 1));
@@ -331,7 +323,6 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
     }
   }
 
-  /** Concatenate a token list into rendered HTML (skipping pause markers). */
   function renderTokens(tokens: readonly Token[]): string {
     let out = "";
     for (const tok of tokens) {
@@ -341,12 +332,11 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
   }
 
   /**
-   * Backspace the segment's prior content one grapheme at a time. Tags fall
-   * off instantly with the char to their right — they're invisible, so the
-   * user only sees char-by-char shrinking. We may briefly leave unbalanced
-   * tags in the DOM (e.g. an open `<em>` whose `</em>` was already popped);
-   * the browser closes the element at the boundary, so the visual is just
-   * "italic region shrinks" rather than a flash of broken markup.
+   * Backspace the segment's prior content one grapheme at a time. Tags pop
+   * instantly with the char to their right (invisible, so the user only
+   * sees char-by-char shrinking). Briefly unbalanced tags are fine: the
+   * browser closes the element at the boundary, so the italic region
+   * shrinks rather than flashing broken markup.
    */
   async function backspaceCurrent(seg: Segment): Promise<void> {
     const tokens = tokenize(seg.lastTyped).filter((t) => t.kind !== "pause");
@@ -365,10 +355,10 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
   }
 
   /**
-   * Type `seg`'s next string. If `seg` carries content from an earlier
-   * visit, erase it first and settle on the empty slot for a beat before
-   * typing — so each visit reads as a complete "erase → type" gesture
-   * rather than a snap-replace. The caret stays solid throughout.
+   * Type `seg`'s next string. Content from an earlier visit is erased
+   * first, with a beat on the empty slot, so each visit reads as
+   * erase-then-type rather than a snap-replace. The caret stays solid
+   * throughout.
    */
   async function typeSegment(seg: Segment): Promise<void> {
     setTyping(seg);
@@ -403,18 +393,14 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
   }
 
   /**
-   * Linger on `from` to absorb what just typed, move the baton to `next`,
-   * then think. Erasure of `next`'s prior content happens inside
-   * `typeSegment`, deliberately *after* the think — so the user gets a
-   * silent window to read `next`'s old content (or, on the first pass,
-   * just to settle into the empty slot) before it's replaced. Revisit
+   * Linger on `from`, move the baton to `next`, then think. `typeSegment`
+   * erases `next`'s prior content only after the think, so the user gets a
+   * silent window to read the old content before it's replaced. Revisit
    * handoffs widen both pauses for a more deliberate swap rhythm.
    */
   async function handoff(from: Segment, next: Segment): Promise<void> {
-    // Pause point: the just-finished sentence is fully typed and visible.
-    // If a pause is pending (e.g. footer scrolled into view), block here
-    // before starting the linger so the dim doesn't fall over a sentence
-    // in motion.
+    // Block pending pauses here, while the just-finished sentence is fully
+    // typed and visible, so the dim never falls over a sentence in motion.
     await checkpoint();
     const revisit = next.lastTyped !== "";
     const lingerBonus = revisit ? REVISIT_LINGER_BONUS : 0;

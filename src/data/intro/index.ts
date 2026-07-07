@@ -16,15 +16,10 @@ export interface IntroSegment {
 
 /**
  * Candidate strings for each segment of the hero typing sequence. The
- * controller in `src/scripts/typed-sequence.ts` owns the order in which
- * segments appear and the shuffle within each segment.
- *
- * Strings may include inline `^N` pause markers (sleep N ms while typing)
- * and raw HTML — tags emit at once, their text content types per grapheme.
- *
- * Emoji-only strings (no bare text outside their tags) need no special
- * handling here — the controller prefixes them with an invisible zero-width
- * space so the segment holds the line's text baseline.
+ * controller in `src/scripts/typed-sequence.ts` owns segment order and the
+ * shuffle within each segment. Strings may include inline `^N` pause
+ * markers and raw HTML; emoji-only strings need no special handling (the
+ * controller prefixes a zero-width space to hold the text baseline).
  */
 export const introSegments: readonly IntroSegment[] = [
   { id: "hello", strings: hello },
@@ -35,3 +30,11 @@ export const introSegments: readonly IntroSegment[] = [
   { id: "next", strings: next },
   { id: "outro", strings: outro },
 ];
+
+/**
+ * Canonical one-sentence intro for every non-animated surface: the hero's
+ * aria-label, its noscript fallback, and the reduced-motion/unsupported
+ * static text. Lives here so it can't drift from the typed content above.
+ */
+export const staticIntro =
+  "Hi there. My name is Dale French, and I’m a frontend engineer and engineering manager based in Amsterdam.";
