@@ -1,0 +1,480 @@
+/*
+ * Hero typing sequence. Each segment (hello, name, job, ...) is an inline
+ * <span>; the controller types the next shuffled string into the active
+ * segment one grapheme at a time, then lingers, moves the baton, thinks,
+ * and types again. Strings support inline `^N` pause markers (sleep N ms)
+ * and raw HTML (tags emit at once; their text content types).
+ */
+
+import { introSegments, type SegmentId } from "../data/intro";
+
+/* ------------------------------- timing -------------------------------- */
+
+const TYPE_SPEED = 28;
+const BACK_SPEED = 22;
+const INITIAL_DELAY = 3000;
+// Beat between erase and retype so the swap doesn't read as a hard cut.
+const POST_BACKSPACE_SETTLE = 500;
+
+const LINGER_BASE = 450;
+const LINGER_LENGTH_MS_PER_CHAR = 8;
+const LINGER_LENGTH_CAP = 250;
+
+const THINK_BASE = 650;
+const THINK_LENGTH_MS_PER_CHAR = 6;
+const THINK_LENGTH_CAP = 250;
+
+const PRE_THINK_BONUS_AFTER: Partial<Record<SegmentId, number>> = {
+  next: 350,
+  outro: 350,
+};
+
+// Handoffs that erase prior content get extra breathing room: more time
+// on the just-finished string before the baton moves, and more time on
+// the old content before the erase. First-pass handoffs skip both.
+const REVISIT_LINGER_BONUS = 750;
+const REVISIT_THINK_BONUS = 350;
+
+const PUNCT_BONUS: Record<string, number> = {
+  ".": 120,
+  "!": 80,
+  "?": 220,
+  "…": 320,
+  ")": 100,
+};
+
+/* ------------------------------ sequence ------------------------------- */
+
+// Both passes derive from the data so a new segment can't be silently
+// left out of the sequence.
+
+// First pass: a deliberate intro story in data order, ending with the close.
+const INITIAL_ORDER: readonly SegmentId[] = introSegments
+  .filter((seg) => seg.firstPass)
+  .map((seg) => seg.id);
+
+// After the initial pass, segments rotate randomly from this pool.
+const ROTATION_POOL: readonly SegmentId[] = introSegments
+  .filter((seg) => seg.inRotation)
+  .map((seg) => seg.id);
+
+/* -------------------------------- DOM ---------------------------------- */
+
+const ACTIVE = "typed--active";
+const TYPING = "typed--typing";
+
+/* ------------------------------- types --------------------------------- */
+
+type Token =
+  | { kind: "char"; text: string }
+  | { kind: "tag"; text: string }
+  | { kind: "pause"; ms: number };
+
+interface Segment {
+  readonly id: SegmentId;
+  readonly el: HTMLElement;
+  readonly strings: readonly string[];
+  sequence: number[];
+  pos: number;
+  lastTyped: string;
+}
+
+export interface TypedSequenceController {
+  /**
+   * Request a pause. The in-flight sentence completes first; the returned
+   * promise resolves once the run loop has actually parked (or on
+   * resume/destroy, so callers can re-check state and bail).
+   */
+  pause(): Promise<void>;
+  resume(): void;
+  destroy(): void;
+}
+
+class CancelledError extends Error {}
+
+/* ----------------------------- utilities ------------------------------- */
+
+// Guarded so importing this module never throws on browsers without
+// Intl.Segmenter (Safari < 16.4, Firefox < 125); callers check
+// isTypedSequenceSupported() and fall back to static text.
+const segmenter =
+  "Segmenter" in Intl
+    ? new Intl.Segmenter("en", { granularity: "grapheme" })
+    : null;
+
+export function isTypedSequenceSupported(): boolean {
+  return segmenter !== null;
+}
+
+function* graphemesOf(s: string): Iterable<string> {
+  if (segmenter) {
+    for (const { segment } of segmenter.segment(s)) yield segment;
+  } else {
+    // Only reachable if a caller skips the support check. Code points split
+    // some emoji sequences, but everything still types.
+    yield* Array.from(s);
+  }
+}
+
+function shuffledIndices(n: number): number[] {
+  const out = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+const PAUSE_MARKER = /^\^(\d+)/;
+
+/** Split a string into tokens for typing: graphemes, HTML tags, ^N pauses. */
+function tokenize(raw: string): Token[] {
+  const tokens: Token[] = [];
+  let i = 0;
+  let textRun = "";
+
+  const flushTextRun = () => {
+    if (!textRun) return;
+    for (const g of graphemesOf(textRun))
+      tokens.push({ kind: "char", text: g });
+    textRun = "";
+  };
+
+  while (i < raw.length) {
+    const ch = raw[i];
+    if (ch === "^") {
+      const match = PAUSE_MARKER.exec(raw.slice(i));
+      if (match) {
+        flushTextRun();
+        tokens.push({ kind: "pause", ms: parseInt(match[1], 10) });
+        i += match[0].length;
+        continue;
+      }
+    }
+    if (ch === "<") {
+      const end = raw.indexOf(">", i);
+      if (end !== -1) {
+        flushTextRun();
+        tokens.push({ kind: "tag", text: raw.slice(i, end + 1) });
+        i = end + 1;
+        continue;
+      }
+    }
+    textRun += ch;
+    i += 1;
+  }
+  flushTextRun();
+  return tokens;
+}
+
+function strip(s: string): string {
+  return s.replace(/<[^>]+>/g, "").replace(/\^\d+/g, "");
+}
+
+/**
+ * The emoji <span>s render at line-height: 0 (see Hero.astro), so they
+ * can't hold the line's baseline. Strings with no bare text outside their
+ * tags get a zero-width space prefix so the segment still contributes
+ * baseline text.
+ */
+function withBaselineHolder(raw: string): string {
+  let depth = 0;
+  for (const tok of tokenize(raw)) {
+    if (tok.kind === "tag") depth += tok.text.startsWith("</") ? -1 : 1;
+    else if (tok.kind === "char" && depth === 0) return raw;
+  }
+  return `\u{200B}${raw}`;
+}
+
+function lingerFor(lastTyped: string): number {
+  const stripped = strip(lastTyped);
+  const trailing = stripped.trim().slice(-1);
+  const lengthBonus = Math.min(
+    stripped.length * LINGER_LENGTH_MS_PER_CHAR,
+    LINGER_LENGTH_CAP,
+  );
+  const punctBonus = PUNCT_BONUS[trailing] ?? 0;
+  return LINGER_BASE + lengthBonus + punctBonus;
+}
+
+function thinkFor(nextStr: string, fromId: SegmentId): number {
+  const stripped = strip(nextStr);
+  const lengthBonus = Math.min(
+    stripped.length * THINK_LENGTH_MS_PER_CHAR,
+    THINK_LENGTH_CAP,
+  );
+  const segBonus = PRE_THINK_BONUS_AFTER[fromId] ?? 0;
+  return THINK_BASE + lengthBonus + segBonus;
+}
+
+/** ±50% jitter around `base` ms-per-char so typing feels less mechanical. */
+function humanize(base: number): number {
+  return base + Math.round((Math.random() * base) / 2);
+}
+
+/* ---------------------------- controller ------------------------------- */
+
+export function startTypedSequence(host: HTMLElement): TypedSequenceController {
+  const segments = new Map<SegmentId, Segment>();
+  for (const seg of introSegments) {
+    const el = host.querySelector<HTMLElement>(`#seg-${seg.id}`);
+    if (!el) continue;
+    segments.set(seg.id, {
+      id: seg.id,
+      el,
+      strings: seg.strings,
+      sequence: shuffledIndices(seg.strings.length),
+      pos: 0,
+      lastTyped: "",
+    });
+  }
+
+  let cancelled = false;
+  let paused = false;
+  // True once the run loop has blocked at a checkpoint while paused.
+  let parked = false;
+  let activeTimer: number | null = null;
+  let activeSleepResolve: (() => void) | null = null;
+  const pauseWaiters: (() => void)[] = [];
+  const parkedWaiters: (() => void)[] = [];
+
+  function sleep(ms: number): Promise<void> {
+    return new Promise<void>((resolve) => {
+      activeSleepResolve = resolve;
+      activeTimer = window.setTimeout(() => {
+        activeTimer = null;
+        activeSleepResolve = null;
+        resolve();
+      }, ms);
+    });
+  }
+
+  function waitWhilePaused(): Promise<void> {
+    if (!paused) return Promise.resolve();
+    return new Promise<void>((resolve) => pauseWaiters.push(resolve));
+  }
+
+  /**
+   * Yield point between awaits. Resolves immediately if running; blocks
+   * while paused; throws CancelledError if destroyed. Use only at segment
+   * boundaries (handoff, run loop) so a pause never strands a half-typed
+   * sentence on screen.
+   */
+  async function checkpoint(): Promise<void> {
+    if (paused) {
+      parked = true;
+      for (const resolve of parkedWaiters.splice(0)) resolve();
+      await waitWhilePaused();
+    }
+    if (cancelled) throw new CancelledError();
+  }
+
+  /**
+   * Cancel-only yield point. Ignores pause so the in-flight sentence
+   * (typing or backspacing) completes before pause takes effect at the
+   * next handoff.
+   */
+  function cancelOnly(): void {
+    if (cancelled) throw new CancelledError();
+  }
+
+  function setActive(seg: Segment) {
+    host
+      .querySelectorAll("." + ACTIVE)
+      .forEach((el) => el.classList.remove(ACTIVE));
+    seg.el.classList.add(ACTIVE);
+  }
+
+  function setTyping(seg: Segment) {
+    host
+      .querySelectorAll("." + TYPING)
+      .forEach((el) => el.classList.remove(TYPING));
+    seg.el.classList.add(TYPING);
+  }
+
+  function clearTyping(seg: Segment) {
+    seg.el.classList.remove(TYPING);
+  }
+
+  function peekString(seg: Segment): string {
+    return seg.strings[seg.sequence[seg.pos]] ?? "";
+  }
+
+  function advanceCursor(seg: Segment): void {
+    seg.pos += 1;
+    if (seg.pos >= seg.sequence.length) {
+      const lastPlayed = seg.sequence[seg.sequence.length - 1];
+      seg.pos = 0;
+      seg.sequence = shuffledIndices(seg.strings.length);
+      // Don't let the fresh shuffle open with the string that just played;
+      // erasing a sentence and retyping it verbatim reads as a glitch.
+      if (seg.sequence.length > 1 && seg.sequence[0] === lastPlayed) {
+        const j = 1 + Math.floor(Math.random() * (seg.sequence.length - 1));
+        [seg.sequence[0], seg.sequence[j]] = [seg.sequence[j], seg.sequence[0]];
+      }
+    }
+  }
+
+  function renderTokens(tokens: readonly Token[]): string {
+    let out = "";
+    for (const tok of tokens) {
+      if (tok.kind !== "pause") out += tok.text;
+    }
+    return out;
+  }
+
+  /**
+   * Backspace the segment's prior content one grapheme at a time. Tags pop
+   * instantly with the char to their right (invisible, so the user only
+   * sees char-by-char shrinking). Briefly unbalanced tags are fine: the
+   * browser closes the element at the boundary, so the italic region
+   * shrinks rather than flashing broken markup.
+   */
+  async function backspaceCurrent(seg: Segment): Promise<void> {
+    const tokens = tokenize(seg.lastTyped).filter((t) => t.kind !== "pause");
+    while (tokens.length > 0) {
+      cancelOnly();
+      while (tokens.length > 0 && tokens[tokens.length - 1].kind === "tag") {
+        tokens.pop();
+      }
+      if (tokens.length === 0) break;
+      tokens.pop();
+      seg.el.innerHTML = renderTokens(tokens);
+      await sleep(humanize(BACK_SPEED));
+    }
+    seg.el.innerHTML = "";
+    seg.lastTyped = "";
+  }
+
+  /**
+   * Type `seg`'s next string. Content from an earlier visit is erased
+   * first, with a beat on the empty slot, so each visit reads as
+   * erase-then-type rather than a snap-replace. The caret stays solid
+   * throughout.
+   */
+  async function typeSegment(seg: Segment): Promise<void> {
+    setTyping(seg);
+    if (seg.lastTyped) {
+      await backspaceCurrent(seg);
+      await sleep(POST_BACKSPACE_SETTLE);
+      cancelOnly();
+    }
+    const str = withBaselineHolder(peekString(seg));
+    let html = "";
+    for (const tok of tokenize(str)) {
+      cancelOnly();
+      switch (tok.kind) {
+        case "tag":
+          html += tok.text;
+          seg.el.innerHTML = html;
+          break;
+        case "pause":
+          await sleep(tok.ms);
+          break;
+        case "char":
+          await sleep(humanize(TYPE_SPEED));
+          cancelOnly();
+          html += tok.text;
+          seg.el.innerHTML = html;
+          break;
+      }
+    }
+    clearTyping(seg);
+    seg.lastTyped = str;
+    advanceCursor(seg);
+  }
+
+  /**
+   * Linger on `from`, move the baton to `next`, then think. `typeSegment`
+   * erases `next`'s prior content only after the think, so the user gets a
+   * silent window to read the old content before it's replaced. Revisit
+   * handoffs widen both pauses for a more deliberate swap rhythm.
+   */
+  async function handoff(from: Segment, next: Segment): Promise<void> {
+    // Block pending pauses here, while the just-finished sentence is fully
+    // typed and visible, so the dim never falls over a sentence in motion.
+    await checkpoint();
+    const revisit = next.lastTyped !== "";
+    const lingerBonus = revisit ? REVISIT_LINGER_BONUS : 0;
+    const thinkBonus = revisit ? REVISIT_THINK_BONUS : 0;
+    await sleep(lingerFor(from.lastTyped) + lingerBonus);
+    await checkpoint();
+    setActive(next);
+    await sleep(thinkFor(peekString(next), from.id) + thinkBonus);
+    await checkpoint();
+  }
+
+  function pickFromPool(excludeId: SegmentId): Segment | null {
+    const candidates = ROTATION_POOL.filter(
+      (id) => id !== excludeId && segments.has(id),
+    );
+    if (!candidates.length) return null;
+    const id = candidates[Math.floor(Math.random() * candidates.length)];
+    return segments.get(id) ?? null;
+  }
+
+  async function run(): Promise<void> {
+    const first = segments.get(INITIAL_ORDER[0]);
+    if (!first) return;
+
+    setActive(first);
+    await sleep(INITIAL_DELAY);
+    await checkpoint();
+    await typeSegment(first);
+
+    let from: Segment = first;
+    for (const id of INITIAL_ORDER.slice(1)) {
+      const next = segments.get(id);
+      if (!next) continue;
+      await handoff(from, next);
+      await typeSegment(next);
+      from = next;
+    }
+
+    while (!cancelled) {
+      const next = pickFromPool(from.id);
+      if (!next) return;
+      await handoff(from, next);
+      await typeSegment(next);
+      from = next;
+    }
+  }
+
+  run().catch((err) => {
+    if (err instanceof CancelledError) return;
+    throw err;
+  });
+
+  function pause(): Promise<void> {
+    paused = true;
+    if (parked) return Promise.resolve();
+    return new Promise<void>((resolve) => parkedWaiters.push(resolve));
+  }
+
+  function resume() {
+    if (!paused) return;
+    paused = false;
+    parked = false;
+    for (const resolve of pauseWaiters.splice(0)) resolve();
+    // Settle pause() callers still waiting on a park that will never come.
+    for (const resolve of parkedWaiters.splice(0)) resolve();
+  }
+
+  return {
+    pause,
+    resume,
+    destroy() {
+      cancelled = true;
+      if (activeTimer !== null) {
+        clearTimeout(activeTimer);
+        activeTimer = null;
+      }
+      // Settle the in-flight sleep so the run loop reaches its next cancel
+      // check and exits via CancelledError instead of hanging forever.
+      activeSleepResolve?.();
+      activeSleepResolve = null;
+      for (const resolve of pauseWaiters.splice(0)) resolve();
+      for (const resolve of parkedWaiters.splice(0)) resolve();
+    },
+  };
+}

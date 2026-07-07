@@ -1,0 +1,229 @@
+---
+import Logo from "./Logo.astro";
+import { introSegments, staticIntro } from "../data/intro";
+---
+
+<div class="hero-stage depth-layer min-h-dvh">
+  <section class="hero px-page-x pt-page-y-md pb-4 sm:pb-6">
+    <a href="/" class="brand" aria-label="Home">
+      <Logo class="h-(--logo-size) w-(--logo-size)" bg="black" fg="white" />
+    </a>
+
+    <h1 class="hero-text" aria-label={staticIntro}>
+      <span class="hero-text-static">{staticIntro}</span>
+      <span class="hero-text-typing" aria-hidden="true">
+        <Fragment
+          set:html={introSegments
+            .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
+            .join(" ")}
+        />
+      </span>
+    </h1>
+  </section>
+</div>
+
+<script>
+  import {
+    isTypedSequenceSupported,
+    startTypedSequence,
+  } from "../scripts/typed-sequence";
+
+  // Pause once the footer covers this fraction of the viewport. Footer
+  // visibility would misfire here: on tall screens the footer is shorter
+  // than the viewport, so its own ratio reads "mostly visible" at scroll 0
+  // and would park the sequence before it ever types.
+  const FOOTER_PAUSE_COVERAGE = 0.5;
+  // On tall viewports the footer's capped height can never cover half the
+  // viewport, so also pause once the footer is fully in view — which only
+  // happens at max scroll (at scroll 0 its bottom still hangs below the
+  // viewport). Just under 1 to absorb subpixel rounding.
+  const FOOTER_PAUSE_FULL_RATIO = 0.99;
+  // Dense thresholds so the callback re-fires often enough to track the
+  // viewport-coverage boundary, which no single footer ratio maps to.
+  const COVERAGE_THRESHOLDS = Array.from({ length: 21 }, (_, i) => i / 20);
+
+  const host = document.querySelector<HTMLElement>(".hero");
+  if (host) {
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    // When the animation can't run, the server-rendered static intro is
+    // already showing; there's nothing to do.
+    if (!reduced && isTypedSequenceSupported()) {
+      // Usually a no-op (the `scripting: enabled` style already hides it);
+      // removal covers browsers that animate but predate that media query.
+      host.querySelector(".hero-text-static")?.remove();
+      const controller = startTypedSequence(host);
+      const footer = document.querySelector<HTMLElement>(".site-footer");
+      if (footer) {
+        let pausedByFooter = false;
+        const observer = new IntersectionObserver(
+          (entries) => {
+            // Entries batch oldest → newest; only the last reflects the
+            // current state.
+            const entry = entries[entries.length - 1];
+            const rootHeight = entry.rootBounds?.height ?? window.innerHeight;
+            const coverage = entry.intersectionRect.height / rootHeight;
+            const occluded =
+              coverage >= FOOTER_PAUSE_COVERAGE ||
+              entry.intersectionRatio >= FOOTER_PAUSE_FULL_RATIO;
+            if (occluded && !pausedByFooter) {
+              pausedByFooter = true;
+              // Dim only once the sequence has actually parked (the pause
+              // takes effect at the next segment boundary), so the fade
+              // never falls over a sentence still in motion.
+              controller.pause().then(() => {
+                if (pausedByFooter) host.classList.add("typed--background");
+              });
+            } else if (!occluded && pausedByFooter) {
+              pausedByFooter = false;
+              host.classList.remove("typed--background");
+              controller.resume();
+            }
+          },
+          { threshold: COVERAGE_THRESHOLDS },
+        );
+        observer.observe(footer);
+      }
+    }
+  }
+</script>
+
+<style>
+  .hero-stage {
+    --depth: -2;
+    background-color: var(--color-bg);
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--hero-gap-y);
+  }
+
+  .brand {
+    display: inline-flex;
+    width: max-content;
+    border-radius: var(--radius-link);
+    color: var(--color-fg);
+  }
+
+  .hero-text {
+    align-self: start;
+    font-family: var(--font-display);
+    font-size: var(--hero-text);
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 500;
+    color: var(--color-fg);
+    cursor: default;
+    pointer-events: none;
+    user-select: all;
+    /* Reserve three lines of capacity so the layout doesn't jump as short
+       and long strings cycle through. Most strings fit; very long ones
+       still expand below this floor. */
+    min-height: 3em;
+    /* Intentionally NOT `text-wrap: pretty`: it re-balances lines as
+       content grows, so the final character of a typing run triggers a
+       visible re-wrap. */
+  }
+
+  .hero-text > * {
+    pointer-events: auto;
+  }
+
+  /* The static intro is the no-JS, reduced-motion, and old-browser
+     rendering; hide it only when the typing animation can actually take
+     over. Browsers without `scripting` support keep it visible until the
+     script removes it on animation start. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .hero-text-static {
+      display: none;
+    }
+  }
+
+  .hero-text-typing {
+    /* Wrapper exists only to scope `aria-hidden` over the dynamic content.
+       Inline-flow so the segments share the h1's line box. */
+    display: inline;
+  }
+
+  :global(.typed) {
+    color: var(--color-fg);
+    opacity: 0.2;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.typed) {
+      transition:
+        color 375ms ease-out,
+        opacity 375ms ease-out;
+    }
+  }
+
+  :global(.typed--active) {
+    opacity: 1;
+  }
+
+  /* Paused state: every segment fades to the same uniform light grey,
+     including the active one. Lighter than the resting dim so the whole
+     line reads as "at rest" rather than "this part is more important." */
+  .hero:global(.typed--background) :global(.typed),
+  .hero:global(.typed--background) :global(.typed--active) {
+    opacity: 0.12;
+    transition:
+      color 500ms ease-out,
+      opacity 500ms ease-out;
+  }
+
+  /* Emoji-wrapping spans within a typed segment. line-height: 0 keeps the
+     emoji from inflating the baseline; the translate fine-tunes optical
+     alignment with the surrounding glyphs. */
+  :global(.typed span) {
+    color: initial;
+    font-family:
+      "Twemoji Mozilla", "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+    line-height: 0;
+    display: inline-block;
+    transform: translate(-0.05em, 0.05em);
+  }
+
+  /* Caret. A sized pseudo-element rather than the `|` glyph, so its width
+     and height aren't at the mercy of whichever font is serving the
+     heading. The negative right margin renders the caret over the trailing
+     inter-segment space instead of pushing content rightward, so nothing
+     shifts when the caret leaves a segment. */
+  :global(.typed--active::after) {
+    content: "";
+    display: inline-block;
+    width: 0.08em;
+    height: 0.85em;
+    margin-left: 0.06em;
+    margin-right: -0.14em;
+    vertical-align: -0.05em;
+    background-color: var(--color-accent);
+  }
+
+  :global(.typed--active:not(.typed--typing)::after) {
+    animation: hero-caret-blink 750ms linear infinite;
+  }
+
+  @keyframes hero-caret-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .hero:global(.typed--background) :global(.typed--active::after) {
+    /* The blink animation's value beats any `opacity` declaration in the
+       cascade, and pausing would freeze it mid-blink; the animation has to
+       come off entirely for the caret to hide. */
+    animation: none;
+    opacity: 0;
+  }
+</style>

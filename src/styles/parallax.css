@@ -1,0 +1,62 @@
+/*
+ * 3D-perspective parallax. Body is the scroll container; descendants set
+ * their own --depth and we derive translate-z plus a size-compensating
+ * scale from it.
+ *
+ * The identity `scale = 1 - depth` cancels the perspective division
+ * `1 / (1 - depth)`, so the visual size of a layer is unchanged while its
+ * scroll speed is not:
+ *
+ *   depth = -2   → scrolls slower than 1:1 (recedes)
+ *   depth = 0    → scrolls at 1:1 (no parallax)
+ *   depth = 0.25 → scrolls faster than 1:1 (advances)
+ */
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  perspective: 1px;
+  perspective-origin: bottom;
+  transform-style: preserve-3d;
+}
+
+body > * {
+  transform-style: preserve-3d;
+}
+
+.depth-layer {
+  --depth: 0;
+  transform: translate3d(0, 0, calc(var(--depth) * 1px))
+    scale(calc(1 - var(--depth)));
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    height: auto;
+  }
+
+  body {
+    overflow-y: auto;
+    perspective: none;
+    transform-style: flat;
+  }
+
+  body > *,
+  .depth-layer {
+    transform: none;
+    transform-style: flat;
+    will-change: auto;
+  }
+}

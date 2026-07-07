@@ -1,0 +1,31 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<svg
+  class:list={["arrow-icon", className]}
+  viewBox="0 0 24 20"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  aria-hidden="true"
+>
+  <path d="M0 10h24M14 20l10-10L14 0" vector-effect="non-scaling-stroke"></path>
+</svg>
+
+<style>
+  /* :where() keeps specificity at 0 so consumer classes (e.g. h-4) override.
+     Sized in em so the icon tracks its container's font-size. */
+  :where(.arrow-icon) {
+    display: inline-block;
+    height: 0.5em;
+    width: auto;
+    overflow: visible;
+    stroke-width: 0.12em;
+    vertical-align: baseline;
+  }
+</style>

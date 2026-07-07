@@ -1,0 +1,28 @@
+export interface ContactLink {
+  readonly label: string;
+  readonly href: string;
+  /** Plain-text value to expose for clipboard copy (e.g. an email address). */
+  readonly copy?: string;
+  /** Open in a new tab. Defaults to false; internal links never set this. */
+  readonly external?: boolean;
+}
+
+export const contactLinks: readonly ContactLink[] = [
+  {
+    label: "Email",
+    href: "mailto:hello@dalefrench.dev",
+    copy: "hello@dalefrench.dev",
+    // Not external: target="_blank" on a mailto leaves a dead about:blank
+    // tab behind while the OS hands off to the mail client.
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/dale-french",
+    external: true,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/dale-french-dev/",
+    external: true,
+  },
+];

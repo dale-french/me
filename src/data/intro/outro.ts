@@ -1,0 +1,15 @@
+export default [
+  "<span>🤙</span>",
+  "<span>🫡</span>",
+  "<span>✌️</span>",
+  "Cheers.",
+  "Peace out.",
+  "Later.",
+  "Thanks.",
+  "Tot ziens.",
+  "Thanks for stopping by.",
+  "Okay,^250 back to work.",
+  "Have a good one.",
+  "Have a lekker day.",
+  "Take it easy.",
+] as const satisfies readonly string[];

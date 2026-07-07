@@ -1,0 +1,64 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Logo from "../components/Logo.astro";
+import { SITE_TITLE } from "../consts";
+---
+
+<Layout
+  title={`Not found · ${SITE_TITLE}`}
+  description="This page doesn’t exist."
+>
+  <main id="main" class="not-found px-page-x pt-page-y-md">
+    <a href="/" class="brand" aria-label="Home">
+      <Logo class="h-(--logo-size) w-(--logo-size)" bg="black" fg="white" />
+    </a>
+
+    <h1 class="not-found-text">
+      Hmm.<br />There’s nothing here.
+    </h1>
+
+    <p class="not-found-link"><a href="/">Back to the homepage.</a></p>
+  </main>
+</Layout>
+
+<style>
+  .not-found {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--hero-gap-y);
+    background-color: var(--color-bg);
+  }
+
+  .brand {
+    display: inline-flex;
+    width: max-content;
+    border-radius: var(--radius-link);
+    color: var(--color-fg);
+  }
+
+  .not-found-text {
+    font-family: var(--font-display);
+    font-size: var(--hero-text);
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  .not-found-link {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem);
+    font-weight: 500;
+  }
+
+  .not-found-link a {
+    margin-inline: calc(-1 * var(--link-enlargement));
+    padding-inline: var(--link-enlargement);
+    border-radius: var(--radius-link);
+    color: var(--color-muted);
+  }
+
+  .not-found-link a:hover {
+    color: var(--color-fg);
+  }
+</style>

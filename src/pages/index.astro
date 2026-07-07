@@ -1,0 +1,13 @@
+---
+import Hero from "../components/Hero.astro";
+import Layout from "../layouts/Layout.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+---
+
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <main id="main">
+    <Hero />
+  </main>
+  <SiteFooter />
+</Layout>

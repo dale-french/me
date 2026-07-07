@@ -1,0 +1,52 @@
+---
+// Every page renders <BaseHead />, so this one import puts global.css
+// on the whole site.
+import "../styles/global.css";
+import { Font } from "astro:assets";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const { title, description } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<meta name="generator" content={Astro.generator} />
+
+{
+  /* Preload only the roman faces: italics appear solely in the typed hero
+    facts and the JS-mounted footer notes, well after first paint. */
+}
+<Font
+  cssVariable="--font-neue-haas-grotesk-text"
+  preload={[{ style: "normal" }]}
+/>
+<Font
+  cssVariable="--font-neue-haas-grotesk-display"
+  preload={[{ style: "normal" }]}
+/>
+
+<link rel="canonical" href={canonicalURL} />
+
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:url" content={Astro.url} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
