@@ -10,7 +10,7 @@ import { introSegments, staticIntro } from "../data/intro";
     </a>
 
     <h1 class="hero-text" aria-label={staticIntro}>
-      <noscript>{staticIntro}</noscript>
+      <span class="hero-text-static">{staticIntro}</span>
       <span class="hero-text-typing" aria-hidden="true">
         <Fragment
           set:html={introSegments
@@ -27,13 +27,17 @@ import { introSegments, staticIntro } from "../data/intro";
     isTypedSequenceSupported,
     startTypedSequence,
   } from "../scripts/typed-sequence";
-  import { staticIntro } from "../data/intro";
 
   // Pause once the footer covers this fraction of the viewport. Footer
   // visibility would misfire here: on tall screens the footer is shorter
   // than the viewport, so its own ratio reads "mostly visible" at scroll 0
   // and would park the sequence before it ever types.
   const FOOTER_PAUSE_COVERAGE = 0.5;
+  // On tall viewports the footer's capped height can never cover half the
+  // viewport, so also pause once the footer is fully in view — which only
+  // happens at max scroll (at scroll 0 its bottom still hangs below the
+  // viewport). Just under 1 to absorb subpixel rounding.
+  const FOOTER_PAUSE_FULL_RATIO = 0.99;
   // Dense thresholds so the callback re-fires often enough to track the
   // viewport-coverage boundary, which no single footer ratio maps to.
   const COVERAGE_THRESHOLDS = Array.from({ length: 21 }, (_, i) => i / 20);
@@ -43,17 +47,12 @@ import { introSegments, staticIntro } from "../data/intro";
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduced || !isTypedSequenceSupported()) {
-      const heroText = host.querySelector<HTMLElement>(".hero-text");
-      if (heroText) {
-        // Wrap in a span: `.hero-text` disables pointer events and only
-        // re-enables them on element children, so a bare text node would be
-        // unselectable.
-        const fallback = document.createElement("span");
-        fallback.textContent = staticIntro;
-        heroText.replaceChildren(fallback);
-      }
-    } else {
+    // When the animation can't run, the server-rendered static intro is
+    // already showing; there's nothing to do.
+    if (!reduced && isTypedSequenceSupported()) {
+      // Usually a no-op (the `scripting: enabled` style already hides it);
+      // removal covers browsers that animate but predate that media query.
+      host.querySelector(".hero-text-static")?.remove();
       const controller = startTypedSequence(host);
       const footer = document.querySelector<HTMLElement>(".site-footer");
       if (footer) {
@@ -65,7 +64,9 @@ import { introSegments, staticIntro } from "../data/intro";
             const entry = entries[entries.length - 1];
             const rootHeight = entry.rootBounds?.height ?? window.innerHeight;
             const coverage = entry.intersectionRect.height / rootHeight;
-            const occluded = coverage >= FOOTER_PAUSE_COVERAGE;
+            const occluded =
+              coverage >= FOOTER_PAUSE_COVERAGE ||
+              entry.intersectionRatio >= FOOTER_PAUSE_FULL_RATIO;
             if (occluded && !pausedByFooter) {
               pausedByFooter = true;
               // Dim only once the sequence has actually parked (the pause
@@ -129,6 +130,16 @@ import { introSegments, staticIntro } from "../data/intro";
 
   .hero-text > * {
     pointer-events: auto;
+  }
+
+  /* The static intro is the no-JS, reduced-motion, and old-browser
+     rendering; hide it only when the typing animation can actually take
+     over. Browsers without `scripting` support keep it visible until the
+     script removes it on animation start. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .hero-text-static {
+      display: none;
+    }
   }
 
   .hero-text-typing {

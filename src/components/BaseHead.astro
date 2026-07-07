@@ -22,8 +22,18 @@ const { title, description } = Astro.props;
 <link rel="sitemap" href="/sitemap-index.xml" />
 <meta name="generator" content={Astro.generator} />
 
-<Font cssVariable="--font-neue-haas-grotesk-text" preload />
-<Font cssVariable="--font-neue-haas-grotesk-display" preload />
+{
+  /* Preload only the roman faces: italics appear solely in the typed hero
+    facts and the JS-mounted footer notes, well after first paint. */
+}
+<Font
+  cssVariable="--font-neue-haas-grotesk-text"
+  preload={[{ style: "normal" }]}
+/>
+<Font
+  cssVariable="--font-neue-haas-grotesk-display"
+  preload={[{ style: "normal" }]}
+/>
 
 <link rel="canonical" href={canonicalURL} />
 

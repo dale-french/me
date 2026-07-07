@@ -34,7 +34,9 @@ const year = new Date().getFullYear();
               aria-label={`Copy ${link.copy}`}
             >
               <span data-copy-label>{link.copy}</span>
-              <CopyIcon class="copy-link-icon" />
+              {/* Tailwind rather than a scoped class: scoped styles can't
+                  reach the svg inside the child component. */}
+              <CopyIcon class="ml-[0.5em]" />
             </button>
           )}
         </li>
@@ -131,8 +133,11 @@ const year = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin-inline: calc(-1 * var(--link-enlargement));
-    padding-inline: var(--link-enlargement);
+    /* Enlarge on both axes (like .home-link): the enlarged box is what the
+       :active wash and focus ring wrap, so the text gets breathing room
+       inside them instead of the pill hugging the glyphs. */
+    margin: calc(-1 * var(--link-enlargement));
+    padding: var(--link-enlargement);
     border-radius: var(--radius-link);
     white-space: nowrap;
     cursor: pointer;
@@ -145,7 +150,8 @@ const year = new Date().getFullYear();
 
   .copy-link {
     display: inline-block;
-    padding-block: 0;
+    padding-block: var(--link-enlargement);
+    margin-block: calc(-1 * var(--link-enlargement));
     padding-inline: var(--link-enlargement);
     margin-inline-start: calc(-1 * var(--link-enlargement) + 1rem);
     border: 0;
@@ -162,13 +168,21 @@ const year = new Date().getFullYear();
     cursor: default;
   }
 
+  /* Touch devices: the Email link already opens the mail app, so the
+     copyable address is hover-workflow sugar — don't show it at all. */
+  @media (hover: none) {
+    .copy-link {
+      display: none;
+    }
+  }
+
   @media (hover: hover) {
+    /* Hidden via opacity alone — `visibility: hidden` would drop the button
+       from the tab order, making it unreachable when Shift+Tabbing backward
+       (its own :focus-visible reveal can't fire before it can be focused). */
     .copy-link {
       opacity: 0;
-      visibility: hidden;
-      transition:
-        opacity 200ms ease-in,
-        visibility 0s linear 200ms;
+      transition: opacity 200ms ease-in;
     }
 
     .contact-link:hover ~ .copy-link,
@@ -176,13 +190,7 @@ const year = new Date().getFullYear();
     .copy-link:hover,
     .copy-link:focus-visible {
       opacity: 1;
-      visibility: visible;
-      transition-delay: 0s, 0s;
     }
-  }
-
-  .copy-link-icon {
-    margin-left: 0.5em;
   }
 
   .bookend {

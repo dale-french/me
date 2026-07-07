@@ -12,23 +12,31 @@ export type SegmentId =
 export interface IntroSegment {
   readonly id: SegmentId;
   readonly strings: readonly string[];
+  /** Part of the deliberate first pass, played in array order. */
+  readonly firstPass: boolean;
+  /** Eligible for the random rotation after the first pass. */
+  readonly inRotation: boolean;
 }
 
 /**
- * Candidate strings for each segment of the hero typing sequence. The
- * controller in `src/scripts/typed-sequence.ts` owns segment order and the
- * shuffle within each segment. Strings may include inline `^N` pause
- * markers and raw HTML; emoji-only strings need no special handling (the
- * controller prefixes a zero-width space to hold the text baseline).
+ * Candidate strings for each segment of the hero typing sequence, plus
+ * which passes the segment plays in — this array is the single source of
+ * truth for sequence membership; the controller in
+ * `src/scripts/typed-sequence.ts` only owns timing and the shuffle within
+ * each segment. Strings may include inline `^N` pause markers and raw
+ * HTML; emoji-only strings need no special handling (the controller
+ * prefixes a zero-width space to hold the text baseline).
  */
 export const introSegments: readonly IntroSegment[] = [
-  { id: "hello", strings: hello },
-  { id: "name", strings: name },
-  { id: "job", strings: job },
-  { id: "fact", strings: fact },
-  { id: "live", strings: live },
-  { id: "next", strings: next },
-  { id: "outro", strings: outro },
+  { id: "hello", strings: hello, firstPass: true, inRotation: true },
+  { id: "name", strings: name, firstPass: true, inRotation: true },
+  { id: "job", strings: job, firstPass: true, inRotation: true },
+  // `fact` is rotation-only garnish; it would slow the intro story down.
+  { id: "fact", strings: fact, firstPass: false, inRotation: true },
+  { id: "live", strings: live, firstPass: true, inRotation: true },
+  { id: "next", strings: next, firstPass: true, inRotation: true },
+  // `outro` closes the first pass and never reappears mid-rotation.
+  { id: "outro", strings: outro, firstPass: true, inRotation: false },
 ];
 
 /**

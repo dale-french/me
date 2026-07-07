@@ -15,5 +15,5 @@ export default [
   "Hi,^375 again.",
   "Hello there.",
   "Nice to meet you.",
-  "Hey! Seems you found me online.",
+  "Hey!^500 Seems you found me online.",
 ] as const satisfies readonly string[];

@@ -45,26 +45,18 @@ const PUNCT_BONUS: Record<string, number> = {
 
 /* ------------------------------ sequence ------------------------------- */
 
-// First pass: a deliberate intro story, ending with the close.
-const INITIAL_ORDER: readonly SegmentId[] = [
-  "hello",
-  "name",
-  "job",
-  "live",
-  "next",
-  "outro",
-];
+// Both passes derive from the data so a new segment can't be silently
+// left out of the sequence.
 
-// After the initial pass, segments rotate randomly from this pool. `outro`
-// is excluded so the closer never reappears mid-rotation.
-const ROTATION_POOL: readonly SegmentId[] = [
-  "hello",
-  "name",
-  "job",
-  "fact",
-  "live",
-  "next",
-];
+// First pass: a deliberate intro story in data order, ending with the close.
+const INITIAL_ORDER: readonly SegmentId[] = introSegments
+  .filter((seg) => seg.firstPass)
+  .map((seg) => seg.id);
+
+// After the initial pass, segments rotate randomly from this pool.
+const ROTATION_POOL: readonly SegmentId[] = introSegments
+  .filter((seg) => seg.inRotation)
+  .map((seg) => seg.id);
 
 /* -------------------------------- DOM ---------------------------------- */
 
@@ -422,15 +414,15 @@ export function startTypedSequence(host: HTMLElement): TypedSequenceController {
   }
 
   async function run(): Promise<void> {
-    const hello = segments.get("hello");
-    if (!hello) return;
+    const first = segments.get(INITIAL_ORDER[0]);
+    if (!first) return;
 
-    setActive(hello);
+    setActive(first);
     await sleep(INITIAL_DELAY);
     await checkpoint();
-    await typeSegment(hello);
+    await typeSegment(first);
 
-    let from: Segment = hello;
+    let from: Segment = first;
     for (const id of INITIAL_ORDER.slice(1)) {
       const next = segments.get(id);
       if (!next) continue;
