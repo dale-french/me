@@ -1,2 +1,3 @@
 export const SITE_TITLE = "Dale French";
-export const SITE_DESCRIPTION = "Hi there. I’m Dale French.";
+export const SITE_DESCRIPTION =
+  "Hey! My name is Dale French, and I am a hands-on engineering manager and frontend engineer based in Amsterdam.";
