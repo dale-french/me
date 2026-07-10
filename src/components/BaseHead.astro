@@ -15,6 +15,13 @@ const socialImage = new URL("/og.png", Astro.site);
 
 const { title, description } = Astro.props;
 
+const gaSnippet = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');
+`;
+
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -91,14 +98,7 @@ const personSchema = {
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
       />
-      <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
-        gtag("config", GA_MEASUREMENT_ID);
-      </script>
+      <script is:inline set:html={gaSnippet} />
     </>
   )
 }
