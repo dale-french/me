@@ -3,6 +3,7 @@
 // on the whole site.
 import "../styles/global.css";
 import { Font } from "astro:assets";
+import { GA_MEASUREMENT_ID } from "../consts";
 
 interface Props {
   title: string;
@@ -77,3 +78,27 @@ const personSchema = {
 <meta name="twitter:image" content={socialImage} />
 
 <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+{
+  /* Google Analytics — production builds only, so local dev doesn't
+    pollute the stats. */
+}
+{
+  import.meta.env.PROD && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+      />
+      <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", GA_MEASUREMENT_ID);
+      </script>
+    </>
+  )
+}
