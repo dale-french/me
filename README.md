@@ -2,7 +2,7 @@
 
 My personal website — [dalefrench.dev](https://dalefrench.dev).
 
-A single page that introduces itself: the hero types, erases, and retypes
+A single page that introduces me: the hero types, erases, and retypes
 shuffled intro lines from a small pool, over a subtle CSS-only parallax.
 Everything degrades gracefully — no JS, reduced motion, and old browsers
 all get a static intro.

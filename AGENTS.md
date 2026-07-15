@@ -41,7 +41,7 @@ the build; all must pass.
   contain `^N` (pause typing for N ms) and inline HTML (tags emit at once;
   their text content types out). `staticIntro` in `src/data/intro/index.ts`
   is the canonical fallback sentence for every non-animated surface.
-- **Motion is fully progressive.** Parallax and the typing animation both
+- **Motion is progressive.** Parallax and the typing animation both
   disable under `prefers-reduced-motion`, and the typing animation also
   falls back to `staticIntro` without JS or `Intl.Segmenter`. Keep new
   motion behind the same guards.
