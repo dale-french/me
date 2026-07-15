@@ -23,65 +23,22 @@ import { introSegments, staticIntro } from "../data/intro";
 </div>
 
 <script>
-  import {
-    isTypedSequenceSupported,
-    startTypedSequence,
-  } from "../scripts/typed-sequence";
-
-  const PAUSE_COVERAGE = 0.25;
-  const RESUME_COVERAGE = 0.19;
+  import { mountFooterDim } from "../scripts/hero-footer-dim";
+  import { startTypedSequence } from "../scripts/typed-sequence";
+  import { isTypedSequenceSupported } from "../scripts/typed-tokens";
 
   const host = document.querySelector<HTMLElement>(".hero");
-  if (host) {
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    // When the animation can't run, the server-rendered static intro is
-    // already showing; there's nothing to do.
-    if (!reduced && isTypedSequenceSupported()) {
-      // Usually a no-op (the `scripting: enabled` style already hides it);
-      // removal covers browsers that animate but predate that media query.
-      host.querySelector(".hero-text-static")?.remove();
-      const controller = startTypedSequence(host);
-      const footer = document.querySelector<HTMLElement>(".site-footer");
-      if (footer) {
-        let pausedByFooter = false;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        function evaluate() {
-          const top = footer!.getBoundingClientRect().top;
-          const coverage = 1 - Math.max(top, 0) / window.innerHeight;
-          if (coverage >= PAUSE_COVERAGE && !pausedByFooter) {
-            pausedByFooter = true;
-            // Dim only once the sequence has actually parked (the pause takes
-            // effect at the next segment boundary), so the fade never falls
-            // over a sentence still in motion.
-            controller.pause().then(() => {
-              if (pausedByFooter) host!.classList.add("typed--background");
-            });
-          } else if (coverage < RESUME_COVERAGE && pausedByFooter) {
-            pausedByFooter = false;
-            host!.classList.remove("typed--background");
-            controller.resume();
-          }
-        }
-
-        // Body is the parallax scroll container, so the scroll events fire
-        // there, not on window. Coalesce bursts to one read per frame.
-        let ticking = false;
-        function schedule() {
-          if (ticking) return;
-          ticking = true;
-          requestAnimationFrame(() => {
-            ticking = false;
-            evaluate();
-          });
-        }
-
-        document.body.addEventListener("scroll", schedule, { passive: true });
-        window.addEventListener("resize", schedule, { passive: true });
-        evaluate();
-      }
-    }
+  // When the animation can't run, the server-rendered static intro is
+  // already showing; there's nothing to do.
+  if (host && !reduced && isTypedSequenceSupported()) {
+    // Usually a no-op (the `scripting: enabled` style already hides it);
+    // removal covers browsers that animate but predate that media query.
+    host.querySelector(".hero-text-static")?.remove();
+    const controller = startTypedSequence(host);
+    const footer = document.querySelector<HTMLElement>(".site-footer");
+    if (footer) mountFooterDim(host, footer, controller);
   }
 </script>
 
