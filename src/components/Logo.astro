@@ -1,22 +1,21 @@
 ---
+// Decorative: every use sits inside a link that carries its own
+// aria-label. Sized by the consumer via `class` (Tailwind utilities —
+// scoped styles in the consumer can't reach this svg).
 interface Props {
   class?: string;
   fg?: string;
   bg?: string;
-  size?: number;
 }
 
-const { class: className, fg = "currentColor", bg, size } = Astro.props;
+const { class: className, fg = "currentColor", bg } = Astro.props;
 ---
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 1254 1254"
-  width={size}
-  height={size}
   class={className}
-  aria-label="Dale French"
-  role="img"
+  aria-hidden="true"
 >
   {bg && <rect width="1254" height="1254" fill={bg} />}
   <path

@@ -1,4 +1,4 @@
-export default [
+export const outro: readonly string[] = [
   "<span>🤙</span>",
   "<span>🫡</span>",
   "<span>✌️</span>",
@@ -12,4 +12,4 @@ export default [
   "Have a good one.",
   "Have a lekker day.",
   "Take it easy.",
-] as const satisfies readonly string[];
+];

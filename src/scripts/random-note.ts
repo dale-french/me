@@ -8,9 +8,9 @@ const VISIBLE = "is-visible";
 export function mountRandomNote(
   bookend: HTMLElement,
   list: HTMLUListElement,
-): { destroy(): void } {
+): void {
   const items = Array.from(list.children) as HTMLElement[];
-  if (items.length === 0) return { destroy() {} };
+  if (items.length === 0) return;
 
   function pickOther(current: HTMLElement | null): HTMLElement {
     if (items.length === 1) return items[0];
@@ -33,10 +33,4 @@ export function mountRandomNote(
     current = next;
   });
   observer.observe(bookend);
-
-  return {
-    destroy() {
-      observer.disconnect();
-    },
-  };
 }

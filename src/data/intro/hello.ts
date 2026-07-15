@@ -1,4 +1,4 @@
-export default [
+export const hello: readonly string[] = [
   "<span>👋</span>",
   "<span>✋</span>",
   "Hi.",
@@ -16,4 +16,4 @@ export default [
   "Hello there.",
   "Nice to meet you.",
   "Hey!^500 Seems you found me online.",
-] as const satisfies readonly string[];
+];
