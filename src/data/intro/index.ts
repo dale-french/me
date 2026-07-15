@@ -1,10 +1,10 @@
-import hello from "./hello";
-import name from "./name";
-import job from "./job";
-import fact from "./fact";
-import live from "./live";
-import next from "./next";
-import outro from "./outro";
+import { hello } from "./hello";
+import { name } from "./name";
+import { job } from "./job";
+import { fact } from "./fact";
+import { live } from "./live";
+import { next } from "./next";
+import { outro } from "./outro";
 
 export type SegmentId =
   "hello" | "name" | "job" | "fact" | "live" | "next" | "outro";

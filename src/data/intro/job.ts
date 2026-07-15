@@ -1,4 +1,4 @@
-export default [
+export const job: readonly string[] = [
   "I build things for the web.",
   "I’m a frontend engineer.",
   "I’m an engineering manager.",
@@ -13,4 +13,4 @@ export default [
   "I was a designer before I was an engineer.",
   "I lead a product team at a global travel company.",
   "I spend a suspicious amount of time with AI agents.",
-] as const satisfies readonly string[];
+];

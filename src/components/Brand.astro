@@ -1,0 +1,16 @@
+---
+import Logo from "./Logo.astro";
+---
+
+<a href="/" class="brand" aria-label="Home">
+  <Logo class="h-(--logo-size) w-(--logo-size)" bg="black" fg="white" />
+</a>
+
+<style>
+  .brand {
+    display: inline-flex;
+    width: max-content;
+    border-radius: var(--radius-link);
+    color: var(--color-fg);
+  }
+</style>

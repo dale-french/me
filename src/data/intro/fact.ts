@@ -1,4 +1,4 @@
-export default [
+export const fact: readonly string[] = [
   "<span>🛠️</span>",
   "<span>🚲</span>",
   "<span>🇿🇦</span>",
@@ -27,4 +27,4 @@ export default [
   "I built my first website for Internet Explorer 6.",
   "I like riding my skateboard.",
   "I used em dashes^750 before they were a thing.",
-] as const satisfies readonly string[];
+];

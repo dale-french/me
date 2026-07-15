@@ -1,4 +1,4 @@
-export default [
+export const next: readonly string[] = [
   "AMA.",
   "Let’s chat.",
   "Say hi back.",
@@ -7,4 +7,4 @@ export default [
   "What are you building?",
   "Want to talk AI agents?",
   "Curious what you’re working on.",
-] as const satisfies readonly string[];
+];

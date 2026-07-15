@@ -1,17 +1,20 @@
 ---
-import Logo from "./Logo.astro";
+import Brand from "./Brand.astro";
 import { introSegments, staticIntro } from "../data/intro";
 ---
 
 <div class="hero-stage depth-layer min-h-dvh">
   <section class="hero px-page-x pt-page-y-md pb-4 sm:pb-6">
-    <a href="/" class="brand" aria-label="Home">
-      <Logo class="h-(--logo-size) w-(--logo-size)" bg="black" fg="white" />
-    </a>
+    <Brand />
 
     <h1 class="hero-text" aria-label={staticIntro}>
       <span class="hero-text-static">{staticIntro}</span>
       <span class="hero-text-typing" aria-hidden="true">
+        {
+          /* set:html rather than a template .map(): the join(" ") provides
+             the inter-segment spaces that the caret's negative right margin
+             (see the ::after rule below) renders over. */
+        }
         <Fragment
           set:html={introSegments
             .map((seg) => `<span class="typed" id="seg-${seg.id}"></span>`)
@@ -52,13 +55,6 @@ import { introSegments, staticIntro } from "../data/intro";
     display: flex;
     flex-direction: column;
     row-gap: var(--hero-gap-y);
-  }
-
-  .brand {
-    display: inline-flex;
-    width: max-content;
-    border-radius: var(--radius-link);
-    color: var(--color-fg);
   }
 
   .hero-text {
