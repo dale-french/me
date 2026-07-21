@@ -26,6 +26,21 @@
 @import "./tokens.css";
 @import "./parallax.css";
 
+/* Theme-aware colors. The hex values in `@theme` above stay light-only on
+   purpose: they're the working palette for browsers without `light-dark()`
+   (a broken substitution would unset every color, not just dark mode).
+   This block is unlayered so it beats Tailwind's `theme` layer. The dark
+   `--color-bg` must match THEME_COLORS in consts.ts. */
+@supports (color: light-dark(#000, #fff)) {
+  :root {
+    --color-fg: light-dark(#000000, #ffffff);
+    --color-bg: light-dark(#ffffff, #111111);
+    --color-faded: light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.2));
+    --color-muted: light-dark(rgb(0 0 0 / 0.55), rgb(255 255 255 / 0.55));
+    --color-surface-faded: light-dark(rgb(255 255 255 / 0.2), rgb(0 0 0 / 0.2));
+  }
+}
+
 body {
   background-color: var(--color-bg);
   color: var(--color-fg);

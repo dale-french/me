@@ -1,0 +1,111 @@
+---
+// Lightbulb artwork adapted from theme-toggles by Alfie Jones (MIT),
+// https://github.com/AlfieJones/theme-toggles. The coil and rays carry
+// pathLength="1" so a dash offset of one full length "draws them out".
+---
+
+<button class="theme-toggle" type="button" aria-label="Dark mode">
+  <svg
+    class="h-8 w-8"
+    viewBox="0 0 32 32"
+    stroke-width="2"
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-linecap="round"
+    aria-hidden="true"
+  >
+    <path
+      stroke-width="1"
+      d="M9.4 9.9c1.8-1.8 4.1-2.7 6.6-2.7 5.1 0 9.3 4.2 9.3 9.3 0 2.3-.8 4.4-2.3 6.1-.7.8-2 2.8-2.5 4.4 0 .2-.2.4-.5.4-.2 0-.4-.2-.4-.5v-.1c.5-1.8 2-3.9 2.7-4.8 1.4-1.5 2.1-3.5 2.1-5.6 0-4.7-3.7-8.5-8.4-8.5-2.3 0-4.4.9-5.9 2.5-1.6 1.6-2.5 3.7-2.5 6 0 2.1.7 4 2.1 5.6.8.9 2.2 2.9 2.7 4.9 0 .2-.1.5-.4.5h-.1c-.2 0-.4-.1-.4-.4-.5-1.7-1.8-3.7-2.5-4.5-1.5-1.7-2.3-3.9-2.3-6.1 0-2.3 1-4.7 2.7-6.5z"
+    ></path>
+    <path d="M19.8 28.3h-7.6"></path>
+    <path d="M19.8 29.5h-7.6"></path>
+    <path d="M19.8 30.7h-7.6"></path>
+    <path
+      class="bulb-coil"
+      pathLength="1"
+      fill="none"
+      d="M14.6 27.1c0-3.4 0-6.8-.1-10.2-.2-1-1.1-1.7-2-1.7-1.2-.1-2.3 1-2.2 2.3.1 1 .9 1.9 2.1 2h7.2c1.1-.1 2-1 2.1-2 .1-1.2-1-2.3-2.2-2.3-.9 0-1.7.7-2 1.7 0 3.4 0 6.8-.1 10.2"
+    ></path>
+    <g class="bulb-rays">
+      <path pathLength="1" d="M16 6.4V1.3"></path>
+      <path pathLength="1" d="M26.3 15.8h5.1"></path>
+      <path pathLength="1" d="m22.6 9 3.7-3.6"></path>
+      <path pathLength="1" d="M9.4 9 5.7 5.4"></path>
+      <path pathLength="1" d="M5.7 15.8H.6"></path>
+    </g>
+  </svg>
+</button>
+
+<script>
+  import { mountThemeToggle } from "../scripts/theme";
+
+  const button = document.querySelector<HTMLButtonElement>(".theme-toggle");
+  if (button) mountThemeToggle(button);
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    margin: calc(-1 * var(--link-enlargement));
+    padding: var(--link-enlargement);
+    border: 0;
+    border-radius: var(--radius-link);
+    background: transparent;
+    /* A utility control: sit at the muted tier (like the 404's homepage
+       link) and sharpen to full strength on interaction. Mixed opaque
+       because the icon's fill, stroke, and overlapping paths double-paint;
+       a translucent color compounds into a darker rim where layers stack. */
+    color: color-mix(in srgb, var(--color-fg) 55%, var(--color-bg));
+    cursor: pointer;
+    transition:
+      transform 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    color: var(--color-fg);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.9);
+  }
+
+  /* Without JS the button is inert; don't offer it. Ancient browsers that
+     predate the `scripting` query fail open to a visible no-op button. */
+  @media (scripting: none) {
+    .theme-toggle {
+      display: none;
+    }
+  }
+
+  /* Bulb state is pure CSS: the mount script loads late, and a JS class
+     flip would flash a lit bulb at every system-dark visitor. `--bulb-on`
+     drains the coil and rays when the resolved theme is dark. */
+  .bulb-coil,
+  .bulb-rays path {
+    stroke-dasharray: 1.1;
+    stroke-dashoffset: calc(1 - var(--bulb-on, 1));
+    opacity: var(--bulb-on, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bulb-coil,
+    .bulb-rays path {
+      transition:
+        stroke-dashoffset 500ms,
+        opacity 500ms;
+    }
+  }
+
+  :global(:root[data-theme="dark"]) .theme-toggle {
+    --bulb-on: 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .theme-toggle {
+      --bulb-on: 0;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 
 interface Props {
   title: string;
@@ -15,6 +16,7 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
+    <SiteHeader />
     <slot />
   </body>
 </html>

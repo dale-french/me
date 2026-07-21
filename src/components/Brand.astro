@@ -3,7 +3,11 @@ import Logo from "./Logo.astro";
 ---
 
 <a href="/" class="brand" aria-label="Home">
-  <Logo class="h-(--logo-size) w-(--logo-size)" bg="black" fg="white" />
+  <Logo
+    class="h-(--logo-size) w-(--logo-size)"
+    bg="var(--color-fg)"
+    fg="var(--color-bg)"
+  />
 </a>
 
 <style>
