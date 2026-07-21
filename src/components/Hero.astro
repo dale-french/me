@@ -1,12 +1,9 @@
 ---
-import Brand from "./Brand.astro";
 import { introSegments, staticIntro } from "../data/intro";
 ---
 
 <div class="hero-stage depth-layer min-h-dvh">
-  <section class="hero px-page-x pt-page-y-md pb-4 sm:pb-6">
-    <Brand />
-
+  <section class="hero px-page-x pb-4 sm:pb-6">
     <h1 class="hero-text" aria-label={staticIntro}>
       <span class="hero-text-static">{staticIntro}</span>
       <span class="hero-text-typing" aria-hidden="true">
@@ -55,6 +52,9 @@ import { introSegments, staticIntro } from "../data/intro";
     display: flex;
     flex-direction: column;
     row-gap: var(--hero-gap-y);
+    /* The SiteHeader overlay renders where the brand row used to sit in
+       this flex column; reserving its run keeps the heading in place. */
+    padding-top: var(--header-run);
   }
 
   .hero-text {

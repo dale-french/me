@@ -3,7 +3,7 @@
 // on the whole site.
 import "../styles/global.css";
 import { Font } from "astro:assets";
-import { GA_MEASUREMENT_ID } from "../consts";
+import { GA_MEASUREMENT_ID, THEME_COLORS } from "../consts";
 
 interface Props {
   title: string;
@@ -14,6 +14,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL("/og.png", Astro.site);
 
 const { title, description } = Astro.props;
+
+// Runs synchronously while the head parses, before anything can paint: an
+// explicit theme choice must land on <html> (and the theme-color metas)
+// pre-paint or the first frame flashes the system theme. No stored choice
+// means follow the system, which pure CSS already renders correctly.
+const themeInit = `
+try {
+  var t = localStorage.getItem("theme");
+  if (t === "light" || t === "dark") {
+    document.documentElement.dataset.theme = t;
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
+      m.content = t === "dark" ? "${THEME_COLORS.dark}" : "${THEME_COLORS.light}";
+    });
+  }
+} catch (e) {}
+`;
 
 const gaSnippet = `
 window.dataLayer = window.dataLayer || [];
@@ -42,7 +58,17 @@ const personSchema = {
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="theme-color" content="#ffffff" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  content={THEME_COLORS.light}
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  content={THEME_COLORS.dark}
+/>
+<script is:inline set:html={themeInit} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />

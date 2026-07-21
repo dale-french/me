@@ -37,6 +37,13 @@ the build; all must pass.
   something inside a child (e.g. the svg in `Logo.astro`), pass Tailwind
   utilities via the `class` prop or use `:global()` — a scoped selector in
   the parent silently does nothing.
+- **Nothing interactive inside the hero's depth layer.** Chromium's
+  hit-testing fails on `.hero-stage`'s large `scale(3) translateZ(-2px)`
+  transform: once the layer is composited, clicks fall through to
+  `<main>`. That's why `SiteHeader` overlays the hero from outside the
+  3D transform (with a raised `z-index`, since it's coplanar with `main`)
+  instead of living in the hero's flex column. The footer's milder layer
+  (`--depth: 0.25`) hit-tests fine.
 - **Hero strings use a mini-syntax.** Strings in `src/data/intro` may
   contain `^N` (pause typing for N ms) and inline HTML (tags emit at once;
   their text content types out). `staticIntro` in `src/data/intro/index.ts`

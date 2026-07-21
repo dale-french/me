@@ -1,0 +1,37 @@
+---
+import Brand from "./Brand.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+{
+  /* Overlays the hero rather than living inside it: Chromium's hit-testing
+     can't resolve clicks through the hero's scaled depth layer, so anything
+     interactive has to stay outside the 3D transform. The zero-height
+     anchor keeps the header in scrolled content without pushing the hero
+     down; Hero/404 reserve its space in their own padding. */
+}
+<div class="site-header-anchor">
+  <header
+    class="site-header flex items-center justify-between px-page-x pt-page-y-md"
+  >
+    <Brand />
+    <ThemeToggle />
+  </header>
+</div>
+
+<style>
+  .site-header-anchor {
+    position: relative;
+    height: 0;
+    /* Coplanar with <main> in the body's 3D context, and main comes later
+       in the DOM, so without a raised stacking order the header paints and
+       hit-tests underneath, swallowing every click. */
+    z-index: 1;
+  }
+
+  .site-header {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+  }
+</style>

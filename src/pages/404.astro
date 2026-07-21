@@ -1,5 +1,4 @@
 ---
-import Brand from "../components/Brand.astro";
 import Layout from "../layouts/Layout.astro";
 import { SITE_TITLE } from "../consts";
 ---
@@ -8,9 +7,7 @@ import { SITE_TITLE } from "../consts";
   title={`Not found · ${SITE_TITLE}`}
   description="This page doesn’t exist."
 >
-  <main id="main" class="not-found px-page-x pt-page-y-md">
-    <Brand />
-
+  <main id="main" class="not-found px-page-x">
     <h1 class="not-found-text">
       Hmm.<br />There’s nothing here.
     </h1>
@@ -26,6 +23,8 @@ import { SITE_TITLE } from "../consts";
     flex-direction: column;
     row-gap: var(--hero-gap-y);
     background-color: var(--color-bg);
+    /* Reserve the SiteHeader overlay's run, same as the hero. */
+    padding-top: var(--header-run);
   }
 
   .not-found-text {
