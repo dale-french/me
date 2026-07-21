@@ -37,6 +37,21 @@
   </svg>
 </button>
 
+<script is:inline>
+  // Mirrors resolveCurrentTheme (src/scripts/theme.ts) for one attribute:
+  // the bundled module loads late, and until it runs the button would
+  // announce as a stateless "Dark mode" button.
+  (function () {
+    var t = document.documentElement.dataset.theme;
+    var dark =
+      t === "dark" ||
+      (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+    document
+      .querySelector(".theme-toggle")
+      .setAttribute("aria-pressed", String(dark));
+  })();
+</script>
+
 <script>
   import { mountThemeToggle } from "../scripts/theme";
 
@@ -75,6 +90,14 @@
   /* Without JS the button is inert; don't offer it. Ancient browsers that
      predate the `scripting` query fail open to a visible no-op button. */
   @media (scripting: none) {
+    .theme-toggle {
+      display: none;
+    }
+  }
+
+  /* Without `light-dark()` the site is permanently light (see global.css),
+     so the toggle would flip the bulb and nothing else. */
+  @supports not (color: light-dark(#000, #fff)) {
     .theme-toggle {
       display: none;
     }

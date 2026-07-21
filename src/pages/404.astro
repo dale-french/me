@@ -23,10 +23,8 @@ import { SITE_TITLE } from "../consts";
     flex-direction: column;
     row-gap: var(--hero-gap-y);
     background-color: var(--color-bg);
-    /* Reserve the SiteHeader overlay's vertical run, same as the hero. */
-    padding-top: calc(
-      var(--spacing-page-y-md) + var(--logo-size) + var(--hero-gap-y)
-    );
+    /* Reserve the SiteHeader overlay's run, same as the hero. */
+    padding-top: var(--header-run);
   }
 
   .not-found-text {

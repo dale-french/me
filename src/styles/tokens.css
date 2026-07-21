@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   --link-enlargement: 0.4rem;
   --link-outline: calc(var(--link-enlargement) / 2);
@@ -7,21 +7,38 @@
   --hero-gap-y: clamp(3rem, 4vw + 1.5rem, 5rem);
   --logo-size: clamp(3rem, 4.5vw + 1rem, 4.5rem);
 
+  /* The vertical run of the SiteHeader overlay plus the gap under it.
+     Hero and 404 reserve this as padding-top so the overlay lands where
+     their brand row used to sit. */
+  --header-run: calc(
+    var(--spacing-page-y-md) + var(--logo-size) + var(--hero-gap-y)
+  );
+
   /* Fluid type scale, largest to smallest. */
   --hero-text: clamp(2.25rem, 5.5vw + 1rem, 4.5rem);
   --contact-text: clamp(1.5rem, 2.5vw + 0.75rem, 2rem);
   --footnote-text: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem);
 }
 
-/* An explicit user choice (set pre-paint by the BaseHead inline script and
-   toggled by ThemeToggle) pins the scheme; no attribute means follow the
-   system, which is what makes the `light-dark()` tokens flip. */
-:root[data-theme="light"] {
-  color-scheme: light;
-}
+/* Dark mode exists only where `light-dark()` does (the token flip in
+   global.css); the same guard here keeps `color-scheme` in step, so a
+   browser stuck on the light palette can't sprout dark UA scrollbars and
+   form controls. */
+@supports (color: light-dark(#000, #fff)) {
+  :root {
+    color-scheme: light dark;
+  }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
+  /* An explicit user choice (set pre-paint by the BaseHead inline script
+     and toggled by ThemeToggle) pins the scheme; no attribute means follow
+     the system, which is what makes the `light-dark()` tokens flip. */
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
 }
 
 ::selection {

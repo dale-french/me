@@ -53,11 +53,8 @@ import { introSegments, staticIntro } from "../data/intro";
     flex-direction: column;
     row-gap: var(--hero-gap-y);
     /* The SiteHeader overlay renders where the brand row used to sit in
-       this flex column; reserve the same vertical run (page padding +
-       logo row + gap) so the heading doesn't move. */
-    padding-top: calc(
-      var(--spacing-page-y-md) + var(--logo-size) + var(--hero-gap-y)
-    );
+       this flex column; reserving its run keeps the heading in place. */
+    padding-top: var(--header-run);
   }
 
   .hero-text {
