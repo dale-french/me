@@ -1,10 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans:
-    var(--font-neue-haas-grotesk-text), ui-sans-serif, system-ui, sans-serif;
-  --font-display:
-    var(--font-neue-haas-grotesk-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-allo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-allo), ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 
@@ -45,6 +43,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-sans);
+  font-optical-sizing: auto;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

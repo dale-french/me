@@ -75,17 +75,10 @@ const personSchema = {
 <meta name="generator" content={Astro.generator} />
 
 {
-  /* Preload only the roman faces: italics appear solely in the typed hero
+  /* Preload only the normal face: italics appear solely in the typed hero
     facts and the JS-mounted footer notes, well after first paint. */
 }
-<Font
-  cssVariable="--font-neue-haas-grotesk-text"
-  preload={[{ style: "normal" }]}
-/>
-<Font
-  cssVariable="--font-neue-haas-grotesk-display"
-  preload={[{ style: "normal" }]}
-/>
+<Font cssVariable="--font-allo" preload={[{ style: "normal" }]} />
 
 <link rel="canonical" href={canonicalURL} />
 
