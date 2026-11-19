@@ -31,8 +31,13 @@ licensed for reuse, redistribution, or modification:
   written content published on the site
 - The Dale French logo (the SVG path data in `src/components/Logo.astro` and
   the favicons in `public/`)
-- The Neue Haas Grotesk font files under `src/assets/fonts/`, which are
-  commercially licensed to the author and may not be copied or redistributed
 
-If you fork this repository, replace the personal content, branding, and
-fonts with your own.
+If you fork this repository, replace the personal content and branding
+with your own.
+
+Third-party fonts — separately licensed
+
+The Allo font files under `src/assets/fonts/` are licensed under the SIL
+Open Font License 1.1, not the MIT license or the personal asset restrictions
+above. See `src/assets/fonts/OFL.txt` for the full license and copyright
+notices.

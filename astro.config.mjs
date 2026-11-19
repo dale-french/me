@@ -12,47 +12,19 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: "Neue Haas Grotesk Text",
-      cssVariable: "--font-neue-haas-grotesk-text",
+      name: "Allo",
+      cssVariable: "--font-allo",
       fallbacks: ["sans-serif"],
       options: {
         variants: [
           {
-            src: ["./src/assets/fonts/neue-haas-grotesk-text--55--roman.woff2"],
-            weight: 400,
+            src: ["./src/assets/fonts/AlloVariableFriendly.woff2"],
+            weight: "100 900",
             style: "normal",
             display: "swap",
           },
           {
-            src: [
-              "./src/assets/fonts/neue-haas-grotesk-text--56--italic.woff2",
-            ],
-            weight: 400,
-            style: "italic",
-            display: "swap",
-          },
-        ],
-      },
-    },
-    {
-      provider: fontProviders.local(),
-      name: "Neue Haas Grotesk Display",
-      cssVariable: "--font-neue-haas-grotesk-display",
-      fallbacks: ["sans-serif"],
-      options: {
-        variants: [
-          {
-            src: [
-              "./src/assets/fonts/neue-haas-grotesk-display--65--medium.woff2",
-            ],
-            weight: 500,
-            style: "normal",
-            display: "swap",
-          },
-          {
-            src: [
-              "./src/assets/fonts/neue-haas-grotesk-display--66--medium-italic.woff2",
-            ],
+            src: ["./src/assets/fonts/Allo-MediumOblique.woff2"],
             weight: 500,
             style: "italic",
             display: "swap",
